@@ -852,6 +852,9 @@
         <!-- WELCOME SCREEN -->
         <div class="screen active" id="welcomeScreen">
             <div class="welcome-content">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <img src="logo.png" alt="SNAP DAT - школа английского языка" style="max-width: 200px; height: auto;">
+                </div>
                 <h2>Добро пожаловать на тест по определению уровня английского языка</h2>
                 
                 <div class="info-card">
@@ -907,6 +910,9 @@
         <!-- RESULTS SCREEN -->
         <div class="screen" id="resultsScreen">
             <div class="results-hero">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="logo.png" alt="SNAP DAT" style="max-width: 150px; height: auto;">
+                </div>
                 <h2>🎉 Тест завершен!</h2>
                 <div class="level-badge-large" id="levelBadge">Загрузка...</div>
                 <div class="score-display" id="totalScore">0/84</div>
@@ -1018,19 +1024,21 @@
 
 const CONFIG = {
     // Google Form URL for automatic submission
-    // Leave empty to use JSON download instead
-    GOOGLE_FORM_URL: '', // Example: 'https://docs.google.com/forms/d/e/1FAIpQ.../formResponse'
+    GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSeXpGO7frfmRq1I1QmoDUUmj7kolKaHfh-s3smqWcTSrtIwlg/formResponse',
     
-    // OpenAI API Key for automatic writing assessment (optional)
-    // Get your key from: https://platform.openai.com/api-keys
-    OPENAI_API_KEY: '', // Example: 'sk-proj-...'
-    USE_AI_GRADING: false, // Set to true to enable AI writing assessment
+    // OpenAI API - DO NOT put your key here if repo is public!
+    // For AI grading, use a private repo or backend server
+    OPENAI_API_KEY: '',
+    USE_AI_GRADING: false,
     
     // Teacher email for notifications
-    TEACHER_EMAIL: 'your.email@example.com',
+    TEACHER_EMAIL: 'tyveric@veric.online',
     
     // Telegram link for scheduling lessons
-    TELEGRAM_URL: 'https://t.me/tyveric'
+    TELEGRAM_URL: 'https://t.me/tyveric',
+    
+    // School name
+    SCHOOL_NAME: 'SNAP DAT - школа английского языка'
 };
 
 // ==================== TEST DATA ====================
@@ -1046,7 +1054,7 @@ const testData = {
                 id: 1,
                 level: "beginner",
                 points: 1,
-                audio: "https://disk.yandex.ru/d/Za0zKTHFzNbfCg?raw=1",
+                audio: "EPT-Listening-A.mp3",
                 audioTitle: "🛒 Listening A: Grocery Store Conversation",
                 text: "Where does the conversation take place?",
                 options: [
@@ -1061,7 +1069,7 @@ const testData = {
                 id: 2,
                 level: "beginner",
                 points: 1,
-                audio: "https://disk.yandex.ru/d/Za0zKTHFzNbfCg?raw=1",
+                audio: "EPT-Listening-A.mp3",
                 audioTitle: "🛒 Listening A: Grocery Store Conversation",
                 text: "Where can the woman find the butter?",
                 options: [
@@ -1076,7 +1084,7 @@ const testData = {
                 id: 3,
                 level: "beginner",
                 points: 1,
-                audio: "https://disk.yandex.ru/d/Za0zKTHFzNbfCg?raw=1",
+                audio: "EPT-Listening-A.mp3",
                 audioTitle: "🛒 Listening A: Grocery Store Conversation",
                 text: "What does the woman NOT need?",
                 options: [
@@ -1091,7 +1099,7 @@ const testData = {
                 id: 4,
                 level: "beginner",
                 points: 1,
-                audio: "https://disk.yandex.ru/d/Za0zKTHFzNbfCg?raw=1",
+                audio: "EPT-Listening-A.mp3",
                 audioTitle: "🛒 Listening A: Grocery Store Conversation",
                 text: "What aisle number is mentioned in the conversation?",
                 options: [
@@ -1107,7 +1115,7 @@ const testData = {
                 id: 5,
                 level: "intermediate",
                 points: 2,
-                audio: "https://disk.yandex.ru/d/DESAUkeo0iEX4w?raw=1",
+                audio: "EPT-Listening-B-AP.mp3",
                 audioTitle: "📰 Listening B: News Report",
                 text: "Where exactly did the earthquake strike?",
                 options: [
@@ -1122,7 +1130,7 @@ const testData = {
                 id: 6,
                 level: "intermediate",
                 points: 2,
-                audio: "https://disk.yandex.ru/d/DESAUkeo0iEX4w?raw=1",
+                audio: "EPT-Listening-B-AP.mp3",
                 audioTitle: "📰 Listening B: News Report",
                 text: "According to the report, what did many people do after they felt the earthquake?",
                 options: [
@@ -1137,7 +1145,7 @@ const testData = {
                 id: 7,
                 level: "intermediate",
                 points: 2,
-                audio: "https://disk.yandex.ru/d/DESAUkeo0iEX4w?raw=1",
+                audio: "EPT-Listening-B-AP.mp3",
                 audioTitle: "📰 Listening B: News Report",
                 text: "What did geophysicists say to people in South Carolina?",
                 options: [
@@ -1152,7 +1160,7 @@ const testData = {
                 id: 8,
                 level: "intermediate",
                 points: 2,
-                audio: "https://disk.yandex.ru/d/DESAUkeo0iEX4w?raw=1",
+                audio: "EPT-Listening-B-AP.mp3",
                 audioTitle: "📰 Listening B: News Report",
                 text: "What time did the earthquake occur?",
                 options: [
@@ -1168,7 +1176,7 @@ const testData = {
                 id: 9,
                 level: "advanced",
                 points: 3,
-                audio: "https://disk.yandex.ru/d/QU4nfupkNg8E4w?raw=1",
+                audio: "EPT-Listening-C.mp3",
                 audioTitle: "🎓 Listening C: Academic Lecture",
                 text: "What is the recording mainly about?",
                 options: [
@@ -1183,7 +1191,7 @@ const testData = {
                 id: 10,
                 level: "advanced",
                 points: 3,
-                audio: "https://disk.yandex.ru/d/QU4nfupkNg8E4w?raw=1",
+                audio: "EPT-Listening-C.mp3",
                 audioTitle: "🎓 Listening C: Academic Lecture",
                 text: "Finish this sentence: English is used in one way or another by...",
                 options: [
@@ -1198,7 +1206,7 @@ const testData = {
                 id: 11,
                 level: "advanced",
                 points: 3,
-                audio: "https://disk.yandex.ru/d/QU4nfupkNg8E4w?raw=1",
+                audio: "EPT-Listening-C.mp3",
                 audioTitle: "🎓 Listening C: Academic Lecture",
                 text: "Which of the following is true about the Angles, Saxons, and Jutes?",
                 options: [
@@ -1213,7 +1221,7 @@ const testData = {
                 id: 12,
                 level: "advanced",
                 points: 3,
-                audio: "https://disk.yandex.ru/d/QU4nfupkNg8E4w?raw=1",
+                audio: "EPT-Listening-C.mp3",
                 audioTitle: "🎓 Listening C: Academic Lecture",
                 text: "According to the lecture, when can the origins of English be traced back to?",
                 options: [
@@ -2468,27 +2476,23 @@ async function exportToGoogleSheets() {
 }
 
 async function submitToGoogleForm(data) {
-    // This will submit to your Google Form
-    // You need to map your form field IDs
-    
+    // Google Form field mappings with actual entry IDs
     const formData = new FormData();
     
-    // Example mapping - you'll need to update these with your actual form field IDs
-    // To find IDs: Inspect your Google Form and look for entry.XXXXXXXX
-    formData.append('entry.1234567', data.studentInfo.name);
-    formData.append('entry.2345678', data.studentInfo.email);
-    formData.append('entry.3456789', data.studentInfo.age || 'Not provided');
-    formData.append('entry.4567890', data.studentInfo.nativeLanguage || 'Not provided');
-    formData.append('entry.5678901', data.timestamp);
-    formData.append('entry.6789012', `${data.results.totalScore}/${data.results.maxScore}`);
-    formData.append('entry.7890123', data.results.percentage + '%');
-    formData.append('entry.8901234', data.placement.level);
-    formData.append('entry.9012345', `${data.results.listening.score}/18`);
-    formData.append('entry.0123456', `${data.results.grammar.score}/36`);
-    formData.append('entry.1234560', `${data.results.reading.score}/18`);
-    formData.append('entry.2345671', data.writingAnswers.writing1 || 'Not completed');
-    formData.append('entry.3456782', data.writingAnswers.writing2 || 'Not completed');
-    formData.append('entry.4567893', JSON.stringify(data.answers));
+    formData.append('entry.936940614', data.studentInfo.name || '');
+    formData.append('entry.38363323', data.studentInfo.email || '');
+    formData.append('entry.308394169', data.studentInfo.age || 'Not provided');
+    formData.append('entry.39515145', data.studentInfo.nativeLanguage || 'Not provided');
+    formData.append('entry.540628309', new Date().toLocaleString('ru-RU'));
+    formData.append('entry.837019120', `${data.results.totalScore}/${data.results.maxScore}`);
+    formData.append('entry.961123626', data.results.percentage + '%');
+    formData.append('entry.654985936', data.placement.level);
+    formData.append('entry.447635218', `${data.results.listening.score}/18`);
+    formData.append('entry.2108423620', `${data.results.grammar.score}/36`);
+    formData.append('entry.956470450', `${data.results.reading.score}/18`);
+    formData.append('entry.1080483481', data.writingAnswers.writing1 || 'Not completed');
+    formData.append('entry.1827659829', data.writingAnswers.writing2 || 'Not completed');
+    formData.append('entry.718946060', JSON.stringify(data.answers));
     
     // Submit to Google Form
     await fetch(CONFIG.GOOGLE_FORM_URL, {
@@ -2497,7 +2501,6 @@ async function submitToGoogleForm(data) {
         body: formData
     });
     
-    // Note: no-cors mode means we won't get a response, but submission will work
     return true;
 }
 
