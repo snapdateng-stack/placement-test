@@ -1032,7 +1032,7 @@ const CONFIG = {
     USE_AI_GRADING: false,
     
     // Teacher email for notifications
-    TEACHER_EMAIL: 'tyveric@veric.online',
+    TEACHER_EMAIL: 'snapdateng@gmail.com',
     
     // Telegram link for scheduling lessons
     TELEGRAM_URL: 'https://t.me/tyveric',
@@ -1779,14 +1779,11 @@ function clearState() {
 // ==================== INITIALIZATION ====================
 
 window.onload = function() {
-    // Check if there's a saved state
-    if (loadState()) {
-        if (confirm("У вас есть незавершенный тест. Хотите продолжить с того места, где остановились?")) {
-            resumeTest();
-        } else {
-            clearState();
-        }
-    }
+    // Always start fresh for placement tests
+    clearState();
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
 };
 
 // ==================== TEST FLOW ====================
