@@ -2289,7 +2289,8 @@ async function assessWritingWithAI() {
     }
     
     try {
-        const response = await fetch('/api/grade-writing', {
+        // CHANGE THIS LINE - add .mjs to the endpoint
+        const response = await fetch('/api/grade-writing.mjs', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -2416,7 +2417,7 @@ async function exportToGoogleSheets() {
         }
         
         // Send email notification
-        await fetch('/api/send-results', {
+        await fetch('/api/send-results.mjs', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
