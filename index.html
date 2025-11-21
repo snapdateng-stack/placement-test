@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -233,11 +234,6 @@
             padding: 25px;
             border-radius: 12px;
             margin: 30px 0;
-        }
-
-        .warning-card h3 {
-            color: var(--primary-orange);
-            margin-bottom: 15px;
         }
 
         /* Section Header */
@@ -1074,7 +1070,7 @@ const testData = {
                 points: 1,
                 audio: "EPT-Listening-A.mp3",
                 audioTitle: "🛒 Listening A: Grocery Store Conversation",
-                text: "Where can the woman find the butter?",
+                text: "Where does the woman find the butter?",
                 options: [
                     { value: "a", text: "at the back of the store" },
                     { value: "b", text: "in aisle 4" },
@@ -1714,7 +1710,7 @@ const testData = {
                 id: "writing1",
                 level: "beginner-intermediate",
                 title: "Task 1: Describe Your Daily Routine",
-                prompt: "Write about your typical day. What time do you wake up? What do you do during the day? What do you do in the evening? Use present simple tense.",
+                prompt: "Write about your typical day. What time do you wake up? What do you do during the day? What do you do during the evening? Use present simple tense.",
                 wordCountMin: 80,
                 wordCountMax: 120,
                 placeholder: "I usually wake up at...",
@@ -1749,6 +1745,8 @@ const testData = {
 
 // ==================== STATE MANAGEMENT ====================
 
+const STATE_KEY = 'placementTestState';
+
 let currentState = {
     currentSection: 0,
     currentQuestion: 0,
@@ -1761,12 +1759,12 @@ let currentState = {
 
 // Save state to localStorage
 function saveState() {
-    localStorage.setItem('placementTestState', JSON.stringify(currentState));
+    localStorage.setItem(STATE_KEY, JSON.stringify(currentState));
 }
 
 // Load state from localStorage
 function loadState() {
-    const saved = localStorage.getItem('placementTestState');
+    const saved = localStorage.getItem(STATE_KEY);
     if (saved) {
         currentState = JSON.parse(saved);
         return true;
@@ -1776,18 +1774,26 @@ function loadState() {
 
 // Clear saved state
 function clearState() {
-    localStorage.removeItem('placementTestState');
+    localStorage.removeItem(STATE_KEY);
 }
 
 // ==================== INITIALIZATION ====================
 
-window.onload = function() {
-    // Always start fresh for placement tests
-    clearState();
+window.addEventListener('DOMContentLoaded', () => {
+    if (loadState() && currentState.currentSection > 0) {
+        // Resume test
+        document.getElementById('welcomeScreen').classList.remove('active');
+        generateSection();
+        startTimer(); // Resume timer
+        updateProgress();
+    } else {
+        // Fresh start
+        clearState();
+    }
     
     // Scroll to top
     window.scrollTo(0, 0);
-};
+});
 
 // ==================== TEST FLOW ====================
 
@@ -1923,6 +1929,11 @@ function generateSection() {
     
     // Add event listeners
     addEventListeners(sectionName);
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
+    
+    saveState();
 }
 
 function getSectionLevelIndicator(section) {
@@ -2137,12 +2148,14 @@ function nextSection() {
     currentState.currentSection++;
     generateSection();
     window.scrollTo(0, 0);
+    saveState();
 }
 
 function previousSection() {
     currentState.currentSection--;
     generateSection();
     window.scrollTo(0, 0);
+    saveState();
 }
 
 function updateProgress() {
@@ -2267,43 +2280,7 @@ async function assessWritingWithAI() {
 }
 
 async function callOpenAI(task1, task2) {
-    const prompt = `You are an expert CELTA/DELTA-qualified ESL teacher assessing student writing.
-
-TASK 1 (Daily Routine - 80-100 words expected):
-"${task1}"
-
-TASK 2 (Opinion Essay - 120-150 words expected):
-"${task2}"
-
-Please assess both tasks and provide scores (0-5 for each task) based on:
-- Grammar accuracy
-- Vocabulary range
-- Task achievement
-- Coherence and organization
-- Spelling and punctuation
-
-Respond ONLY with valid JSON (no markdown, no backticks):
-{
-  "task1": {
-    "score": 0-5,
-    "grammar": "brief comment",
-    "vocabulary": "brief comment",
-    "taskAchievement": "brief comment",
-    "strengths": ["strength1", "strength2"],
-    "areasToImprove": ["area1", "area2"]
-  },
-  "task2": {
-    "score": 0-5,
-    "grammar": "brief comment",
-    "vocabulary": "brief comment",
-    "taskAchievement": "brief comment",
-    "coherence": "brief comment",
-    "strengths": ["strength1", "strength2"],
-    "areasToImprove": ["area1", "area2"]
-  },
-  "overallWritingLevel": "A1/A2/B1/B2/C1",
-  "recommendation": "brief overall recommendation in Russian"
-}`;
+    const prompt = `You are an expert CELTA/DELTA-qualified ESL teacher assessing student writing.\n\nTASK 1 (Daily Routine - 80-100 words expected):\n"${task1}"\n\nTASK 2 (Opinion Essay - 120-150 words expected):\n"${task2}"\n\nPlease assess both tasks and provide scores (0-5 for each task) based on:\n- Grammar accuracy\n- Vocabulary range\n- Task achievement\n- Coherence and organization\n- Spelling and punctuation\n\nRespond ONLY with valid JSON (no markdown, no backticks):\n{\n  "task1": {\n    "score": 0-5,\n    "grammar": "brief comment",\n    "vocabulary": "brief comment",\n    "taskAchievement": "brief comment",\n    "strengths": ["strength1", "strength2"],\n    "areasToImprove": ["area1", "area2"]\n  },\n  "task2": {\n    "score": 0-5,\n    "grammar": "brief comment",\n    "vocabulary": "brief comment",\n    "taskAchievement": "brief comment",\n    "coherence": "brief comment",\n    "strengths": ["strength1", "strength2"],\n    "areasToImprove": ["area1", "area2"]\n  },\n  "overallWritingLevel": "A1/A2/B1/B2/C1",\n  "recommendation": "brief overall recommendation in Russian"\n}`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -2393,6 +2370,9 @@ function finishTest() {
             currentState.results = results;
             currentState.placement = placement;
             saveState();
+            
+            // Clear state after finishing to allow restarting if needed
+            clearState();
             
         } catch (error) {
             console.error('Error calculating results:', error);
@@ -2497,13 +2477,8 @@ function addEventListeners(section) {
     // Add any section-specific event listeners here
 }
 
-function resumeTest() {
-    // Resume from saved state
-    generateSection();
-    startTimer();
-}
-
 </script>
 
 </body>
 </html>
+```
