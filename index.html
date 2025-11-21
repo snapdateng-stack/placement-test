@@ -1780,16 +1780,15 @@ function clearState() {
 // ==================== INITIALIZATION ====================
 
 window.addEventListener('DOMContentLoaded', () => {
-    if (loadState() && currentState.currentSection > 0) {
-        // Resume test
+    if (loadState() && currentState.studentInfo && currentState.studentInfo.name) {
+        // Resume test - check if student info exists
         document.getElementById('welcomeScreen').classList.remove('active');
         generateSection();
-        startTimer(); // Resume timer
+        startTimer();
         updateProgress();
-    } else {
-        // Fresh start
-        clearState();
     }
+    // Don't clear state automatically
+});
     
     // Scroll to top
     window.scrollTo(0, 0);
