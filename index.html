@@ -105,7 +105,7 @@
         }
 
         .content {
-            padding: 50px;
+            padding: 30px;
         }
 
         .timer {
@@ -315,7 +315,7 @@
         /* Questions */
         .question {
             background: var(--light-gray);
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             margin-bottom: 30px;
             border-left: 5px solid var(--primary-orange);
@@ -446,7 +446,7 @@
         /* Writing Section */
         .writing-task {
             background: var(--light-gray);
-            padding: 35px;
+            padding: 25px;
             border-radius: 15px;
             margin-bottom: 35px;
             border-left: 5px solid var(--primary-orange);
@@ -505,7 +505,7 @@
         .button-group {
             display: flex;
             gap: 20px;
-            margin-top: 40px;
+            margin-top: 25px;
             flex-wrap: wrap;
         }
 
@@ -2387,7 +2387,6 @@ function updateSectionScore(section, data) {
 }
 
 // ==================== EXPORT FUNCTIONS ====================
-
 async function exportToGoogleSheets() {
     const exportData = {
         timestamp: new Date().toISOString(),
@@ -2405,29 +2404,61 @@ async function exportToGoogleSheets() {
     button.disabled = true;
     
     try {
+        // Get AI assessment first
+        const aiFeedback = await assessWritingWithAI();
+        exportData.aiFeedback = aiFeedback;
+        
+        // Submit to Google Form
         if (CONFIG.GOOGLE_FORM_URL) {
-            // Submit to Google Form
             await submitToGoogleForm(exportData);
-            alert('✅ Результаты успешно отправлены преподавателю!\n\nВы получите подтверждение в течение 24 часов.');
-        } else {
-            // Fallback: Download JSON
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `placement_test_${currentState.studentInfo.name.replace(/\s+/g, '_')}_${Date.now()}.json`;
-            link.click();
-            
-            alert('✅ Результаты загружены!\n\nПожалуйста, отправьте файл преподавателю на email:\n' + CONFIG.TEACHER_EMAIL);
         }
+        
+        // Send email notification
+        await fetch('/api/send-results', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(exportData)
+        });
+        
+        // Show AI feedback on results page if available
+        if (aiFeedback) {
+            displayAIFeedback(aiFeedback);
+        }
+        
+        alert('✅ Результаты успешно отправлены! Преподаватель получил уведомление.');
+        
     } catch (error) {
         console.error('Submission error:', error);
-        alert('❌ Ошибка отправки. Пожалуйста, попробуйте снова или свяжитесь с преподавателем.');
+        alert('❌ Ошибка отправки. Пожалуйста, попробуйте снова.');
     } finally {
         button.textContent = originalText;
         button.disabled = false;
     }
+}
+
+function displayAIFeedback(aiFeedback) {
+    // Add AI feedback section to results page
+    const aiSection = `
+        <div class="breakdown-card" style="grid-column: 1 / -1;">
+            <h3>🤖 AI Оценка Письменных Заданий</h3>
+            <div style="text-align: left;">
+                <h4>Задание 1: ${aiFeedback.task1?.score}/5</h4>
+                <p><strong>Грамматика:</strong> ${aiFeedback.task1?.grammar}</p>
+                <p><strong>Словарный запас:</strong> ${aiFeedback.task1?.vocabulary}</p>
+                
+                <h4>Задание 2: ${aiFeedback.task2?.score}/5</h4>
+                <p><strong>Грамматика:</strong> ${aiFeedback.task2?.grammar}</p>
+                <p><strong>Словарный запас:</strong> ${aiFeedback.task2?.vocabulary}</p>
+                
+                <p><strong>Рекомендация:</strong> ${aiFeedback.recommendation}</p>
+            </div>
+        </div>
+    `;
+    
+    const breakdownGrid = document.querySelector('.breakdown-grid');
+    breakdownGrid.insertAdjacentHTML('beforeend', aiSection);
 }
 
 async function submitToGoogleForm(data) {
