@@ -7,14 +7,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { studentInfo, results, placement, writingAnswers, aiFeedback } = req.body;
-
   try {
+    const { studentInfo, results, placement, writingAnswers, aiFeedback } = await req.json();
     await sendEmail(studentInfo, results, placement, writingAnswers, aiFeedback);
-    res.status(200).json({ message: 'Email sent successfully' });
+    return res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Email sending error:', error);
-    res.status(500).json({ error: 'Failed to send email' });
+    return res.status(500).json({ error: 'Failed to send email' });
   }
 }
 
@@ -22,7 +21,7 @@ async function sendEmail(studentInfo, results, placement, writingAnswers, aiFeed
   const emailHtml = generateEmailHTML(studentInfo, results, placement, writingAnswers, aiFeedback);
   
   await resend.emails.send({
-    from: 'English Test <notifications@yourdomain.com>',
+    from: 'English Test <onboarding@resend.dev>',
     to: 'snapdateng@gmail.com',
     subject: `New English Placement Test Result - ${studentInfo.name}`,
     html: emailHtml,
