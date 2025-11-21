@@ -1,18 +1,9 @@
 {
   "name": "english-placement-test",
   "version": "1.0.0",
-  "description": "English Placement Test with AI Grading",
-  "main": "index.html",
   "type": "module",
-  "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel dev"
-  },
   "dependencies": {
     "openai": "^4.20.0",
     "resend": "^2.0.0"
-  },
-  "engines": {
-    "node": ">=18.x"
   }
 }
