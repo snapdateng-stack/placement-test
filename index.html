@@ -604,6 +604,28 @@
             margin-bottom: 12px;
         }
 
+        .speaking-encouragement {
+            background: linear-gradient(135deg, #E8F5F4 0%, #F0FFFE 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 3px solid var(--primary-teal);
+            text-align: center;
+        }
+
+        .speaking-encouragement h4 {
+            color: var(--navy-blue);
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .speaking-encouragement p {
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
         .cta-button {
             display: inline-block;
             padding: 15px 30px;
@@ -860,19 +882,19 @@
                     <h4>📅 Следующие шаги:</h4>
                     <ul class="recommendation-list">
                         <li><strong>Преподаватель проверит ваши письменные работы вручную</strong></li>
-                        <li>Вы получите полный отчет с оценкой письма на вашу почту в течение 24 часов</li>
-                        <li>Отчет включит финальный уровень и персональные рекомендации</li>
-                        <li>После получения отчета запланируйте устное собеседование</li>
+                        <li><strong>Вы получите полный отчет с оценкой письма на вашу почту в течение 24 часов</strong></li>
+                        <li><strong>Отчет включит финальный уровень и персональные рекомендации</strong></li>
                     </ul>
                 </div>
-            </div>
 
-            <!-- SIGN UP BUTTON -->
-            <div class="button-group" style="justify-content: center;">
-                <a href="https://t.me/tyveric" class="btn btn-primary" target="_blank" 
-                   style="text-decoration: none; text-align: center; max-width: 280px;">
-                   📞 Записаться на урок
-                </a>
+                <!-- SPEAKING ENCOURAGEMENT -->
+                <div class="speaking-encouragement">
+                    <h4>🗣️ Не теряйте время!</h4>
+                    <p>Пока ждете отчет - запланируйте устное собеседование и начните практику разговорной речи сразу!</p>
+                    <a href="https://t.me/tyveric" class="cta-button" target="_blank">
+                        Записаться на устное собеседование
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -932,26 +954,628 @@ const testData = {
                 ],
                 correct: "a"
             },
-            // ... (include all 12 listening questions from your original code)
-            // For brevity, I'm showing 2 questions - you'll need to include all 12
+            {
+                id: 3,
+                level: "beginner",
+                points: 1,
+                audio: "EPT-Listening-A.mp3",
+                audioTitle: "🛒 Listening A: Grocery Store Conversation",
+                text: "What does the woman NOT need?",
+                options: [
+                    { value: "a", text: "butter" },
+                    { value: "b", text: "shampoo" },
+                    { value: "c", text: "fruit and vegetables" },
+                    { value: "d", text: "help finding things" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 4,
+                level: "beginner",
+                points: 1,
+                audio: "EPT-Listening-A.mp3",
+                audioTitle: "🛒 Listening A: Grocery Store Conversation",
+                text: "What aisle number is mentioned in the conversation?",
+                options: [
+                    { value: "a", text: "Aisle 2" },
+                    { value: "b", text: "Aisle 3" },
+                    { value: "c", text: "Aisle 4" },
+                    { value: "d", text: "Aisle 5" }
+                ],
+                correct: "c"
+            },
+            // INTERMEDIATE (B1) - 4 questions, 2 points each
+            {
+                id: 5,
+                level: "intermediate",
+                points: 2,
+                audio: "EPT-Listening-B-AP.mp3",
+                audioTitle: "📰 Listening B: News Report",
+                text: "Where exactly did the earthquake strike?",
+                options: [
+                    { value: "a", text: "in the capital of South Carolina" },
+                    { value: "b", text: "northeast of the capital of North Carolina" },
+                    { value: "c", text: "northeast of the capital of South Carolina" },
+                    { value: "d", text: "in a South American country" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 6,
+                level: "intermediate",
+                points: 2,
+                audio: "EPT-Listening-B-AP.mp3",
+                audioTitle: "📰 Listening B: News Report",
+                text: "According to the report, what did many people do after they felt the earthquake?",
+                options: [
+                    { value: "a", text: "They went outside to investigate" },
+                    { value: "b", text: "They posted about it on social media" },
+                    { value: "c", text: "They called first responders" },
+                    { value: "d", text: "They turned on the TV" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 7,
+                level: "intermediate",
+                points: 2,
+                audio: "EPT-Listening-B-AP.mp3",
+                audioTitle: "📰 Listening B: News Report",
+                text: "What did geophysicists say to people in South Carolina?",
+                options: [
+                    { value: "a", text: "They likely won't experience another earthquake for a few years" },
+                    { value: "b", text: "They should expect smaller aftershocks in the next few weeks" },
+                    { value: "c", text: "They should prepare for a bigger earthquake in the next month" },
+                    { value: "d", text: "Their homes will likely shake for many months to come" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 8,
+                level: "intermediate",
+                points: 2,
+                audio: "EPT-Listening-B-AP.mp3",
+                audioTitle: "📰 Listening B: News Report",
+                text: "What time did the earthquake occur?",
+                options: [
+                    { value: "a", text: "around 1:30 in the morning" },
+                    { value: "b", text: "around 1:30 in the afternoon" },
+                    { value: "c", text: "at exactly 12:30 am" },
+                    { value: "d", text: "The time is not mentioned" }
+                ],
+                correct: "a"
+            },
+            // ADVANCED (B2-C1) - 4 questions, 3 points each
+            {
+                id: 9,
+                level: "advanced",
+                points: 3,
+                audio: "EPT-Listening-C.mp3",
+                audioTitle: "🎓 Listening C: Academic Lecture",
+                text: "What is the recording mainly about?",
+                options: [
+                    { value: "a", text: "fifth-century English tribes" },
+                    { value: "b", text: "the usage and origins of the English language" },
+                    { value: "c", text: "the population of modern-day Europe" },
+                    { value: "d", text: "how many words there are in English" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 10,
+                level: "advanced",
+                points: 3,
+                audio: "EPT-Listening-C.mp3",
+                audioTitle: "🎓 Listening C: Academic Lecture",
+                text: "Finish this sentence: English is used in one way or another by...",
+                options: [
+                    { value: "a", text: "one-quarter of the world's population" },
+                    { value: "b", text: "about one million people" },
+                    { value: "c", text: "more than two billion people" },
+                    { value: "d", text: "billions of people in 15 countries" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 11,
+                level: "advanced",
+                points: 3,
+                audio: "EPT-Listening-C.mp3",
+                audioTitle: "🎓 Listening C: Academic Lecture",
+                text: "Which of the following is true about the Angles, Saxons, and Jutes?",
+                options: [
+                    { value: "a", text: "They spoke Celtic, which eventually evolved into English" },
+                    { value: "b", text: "They spoke a Germanic language and brought it to the British Isles" },
+                    { value: "c", text: "They traveled from India to the North Sea and learned English on their travels" },
+                    { value: "d", text: "They invaded Britain and forced the local tribes to learn Danish" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 12,
+                level: "advanced",
+                points: 3,
+                audio: "EPT-Listening-C.mp3",
+                audioTitle: "🎓 Listening C: Academic Lecture",
+                text: "According to the lecture, when can the origins of English be traced back to?",
+                options: [
+                    { value: "a", text: "the third century AD" },
+                    { value: "b", text: "the fifth century AD" },
+                    { value: "c", text: "the seventh century AD" },
+                    { value: "d", text: "during the Roman Empire" }
+                ],
+                correct: "b"
+            }
         ]
     },
+
     grammar: {
         title: "Part 2: Grammar",
         subtitle: "Choose the correct answer for each question",
         icon: "✏️",
         questions: [
-            // ... (include all 18 grammar questions from your original code)
+            // BEGINNER (A1-A2) - 6 questions, 1 point each
+            {
+                id: 13,
+                level: "beginner",
+                points: 1,
+                text: "We have _____ dog.",
+                options: [
+                    { value: "a", text: "dog" },
+                    { value: "b", text: "a dogs" },
+                    { value: "c", text: "an dog" },
+                    { value: "d", text: "a dog" }
+                ],
+                correct: "d"
+            },
+            {
+                id: 14,
+                level: "beginner",
+                points: 1,
+                text: "She _____ breakfast right now.",
+                options: [
+                    { value: "a", text: "eat" },
+                    { value: "b", text: "eats" },
+                    { value: "c", text: "ate" },
+                    { value: "d", text: "is eating" }
+                ],
+                correct: "d"
+            },
+            {
+                id: 15,
+                level: "beginner",
+                points: 1,
+                text: "Class starts _____ 9:00 am.",
+                options: [
+                    { value: "a", text: "on" },
+                    { value: "b", text: "at" },
+                    { value: "c", text: "in" },
+                    { value: "d", text: "to" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 16,
+                level: "beginner",
+                points: 1,
+                text: "The baker _____ 50 loaves of bread yesterday.",
+                options: [
+                    { value: "a", text: "made" },
+                    { value: "b", text: "makes" },
+                    { value: "c", text: "is making" },
+                    { value: "d", text: "make" }
+                ],
+                correct: "a"
+            },
+            {
+                id: 17,
+                level: "beginner",
+                points: 1,
+                text: "My parents _____ to the bank tomorrow.",
+                options: [
+                    { value: "a", text: "goes" },
+                    { value: "b", text: "went" },
+                    { value: "c", text: "will go" },
+                    { value: "d", text: "is going to go" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 18,
+                level: "beginner",
+                points: 1,
+                text: "She has a _____ dress.",
+                options: [
+                    { value: "a", text: "beautiful red" },
+                    { value: "b", text: "red beautiful" },
+                    { value: "c", text: "beautifully red" },
+                    { value: "d", text: "red beauty" }
+                ],
+                correct: "a"
+            },
+            // INTERMEDIATE (B1) - 6 questions, 2 points each
+            {
+                id: 19,
+                level: "intermediate",
+                points: 2,
+                text: "I _____ this movie before. It's really good!",
+                options: [
+                    { value: "a", text: "see" },
+                    { value: "b", text: "saw" },
+                    { value: "c", text: "have seen" },
+                    { value: "d", text: "am seeing" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 20,
+                level: "intermediate",
+                points: 2,
+                text: "You _____ wear a seatbelt while driving. It's the law.",
+                options: [
+                    { value: "a", text: "can" },
+                    { value: "b", text: "should" },
+                    { value: "c", text: "must" },
+                    { value: "d", text: "might" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 21,
+                level: "intermediate",
+                points: 2,
+                text: "This book _____ by millions of people around the world.",
+                options: [
+                    { value: "a", text: "reads" },
+                    { value: "b", text: "is read" },
+                    { value: "c", text: "was read" },
+                    { value: "d", text: "has read" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 22,
+                level: "intermediate",
+                points: 2,
+                text: "If it _____ tomorrow, we'll stay home and watch movies.",
+                options: [
+                    { value: "a", text: "will rain" },
+                    { value: "b", text: "rains" },
+                    { value: "c", text: "rained" },
+                    { value: "d", text: "would rain" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 23,
+                level: "intermediate",
+                points: 2,
+                text: "This is _____ building in the city.",
+                options: [
+                    { value: "a", text: "the tall" },
+                    { value: "b", text: "taller" },
+                    { value: "c", text: "the tallest" },
+                    { value: "d", text: "most tall" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 24,
+                level: "intermediate",
+                points: 2,
+                text: "I enjoy _____ books in my free time.",
+                options: [
+                    { value: "a", text: "read" },
+                    { value: "b", text: "to read" },
+                    { value: "c", text: "reading" },
+                    { value: "d", text: "reads" }
+                ],
+                correct: "c"
+            },
+            // ADVANCED (B2-C1) - 6 questions, 3 points each
+            {
+                id: 25,
+                level: "advanced",
+                points: 3,
+                text: "When she arrived at the station, she realized she _____ her wallet at home.",
+                options: [
+                    { value: "a", text: "left" },
+                    { value: "b", text: "has left" },
+                    { value: "c", text: "had left" },
+                    { value: "d", text: "was leaving" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 26,
+                level: "advanced",
+                points: 3,
+                text: "If you _____ harder last year, you would have passed the exam.",
+                options: [
+                    { value: "a", text: "studied" },
+                    { value: "b", text: "had studied" },
+                    { value: "c", text: "have studied" },
+                    { value: "d", text: "would study" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 27,
+                level: "advanced",
+                points: 3,
+                text: "It is essential that each participant _____ the form before the meeting.",
+                options: [
+                    { value: "a", text: "fills out" },
+                    { value: "b", text: "filled out" },
+                    { value: "c", text: "fill out" },
+                    { value: "d", text: "will fill out" }
+                ],
+                correct: "c"
+            },
+            {
+                id: 28,
+                level: "advanced",
+                points: 3,
+                text: "_____ had I arrived at the party than it started raining heavily.",
+                options: [
+                    { value: "a", text: "As soon as" },
+                    { value: "b", text: "No sooner" },
+                    { value: "c", text: "Hardly" },
+                    { value: "d", text: "After" }
+                ],
+                correct: "b"
+            },
+            {
+                id: 29,
+                level: "advanced",
+                points: 3,
+                text: "_____ exhausted after the long journey, she still managed to attend the meeting.",
+                options: [
+                    { value: "a", text: "Being" },
+                    { value: "b", text: "Been" },
+                    { value: "c", text: "Having" },
+                    { value: "d", text: "Was" }
+                ],
+                correct: "a"
+            },
+            {
+                id: 30,
+                level: "advanced",
+                points: 3,
+                text: "_____ surprised me was his complete lack of interest in the proposal.",
+                options: [
+                    { value: "a", text: "That" },
+                    { value: "b", text: "What" },
+                    { value: "c", text: "Which" },
+                    { value: "d", text: "It" }
+                ],
+                correct: "b"
+            }
         ]
     },
+
     reading: {
         title: "Part 3: Reading Comprehension",
         subtitle: "Read the passages and answer the questions",
         icon: "📖",
         passages: [
-            // ... (include all reading passages from your original code)
+            // BEGINNER (A1-A2) - Menu reading
+            {
+                level: "beginner",
+                title: "Sandy's Breakfast Menu",
+                content: `
+                    <div class="menu-box">
+                        <h3 style="text-align: center; color: var(--primary-orange);">🍽️ Sandy's Breakfast Menu</h3>
+                        <p style="text-align: center; font-style: italic; margin-bottom: 20px;">(Available Mon–Fri, 7–11:30 am)</p>
+                        
+                        <h4>Sides</h4>
+                        <p>Toast with jam or honey ................. $1.99</p>
+                        <p>Home fries ........................................ $2.50</p>
+                        <p>Bacon or sausage (3) ....................... $3.50</p>
+                        
+                        <h4>$5.99 Breakfast Specials</h4>
+                        <p>#1 2 eggs and meat with home fries</p>
+                        <p>#2 Cheese omelet with toast</p>
+                        <p>#3 Pancakes (4)</p>
+                        <p>#4 French toast (3 slices)</p>
+                        
+                        <h4>Beverages</h4>
+                        <p>Coffee or tea ..................................... $2.00</p>
+                        <p>Orange or apple juice ..................... $3.50</p>
+                        
+                        <p style="font-style: italic; margin-top: 15px;">Ask your server for our full menu.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        id: 31,
+                        level: "beginner",
+                        points: 1,
+                        text: "What type of information is this?",
+                        options: [
+                            { value: "a", text: "a recipe" },
+                            { value: "b", text: "a breakfast menu" },
+                            { value: "c", text: "a full menu" },
+                            { value: "d", text: "a receipt" }
+                        ],
+                        correct: "b"
+                    },
+                    {
+                        id: 32,
+                        level: "beginner",
+                        points: 1,
+                        text: "What is the name of the restaurant?",
+                        options: [
+                            { value: "a", text: "The information is not available" },
+                            { value: "b", text: "Breakfast Menu" },
+                            { value: "c", text: "Sides" },
+                            { value: "d", text: "Sandy's" }
+                        ],
+                        correct: "d"
+                    },
+                    {
+                        id: 33,
+                        level: "beginner",
+                        points: 1,
+                        text: "Which two items cost the same price?",
+                        options: [
+                            { value: "a", text: "home fries and toast" },
+                            { value: "b", text: "French toast and bacon" },
+                            { value: "c", text: "coffee and tea" },
+                            { value: "d", text: "apple juice and pancakes" }
+                        ],
+                        correct: "c"
+                    },
+                    {
+                        id: 34,
+                        level: "beginner",
+                        points: 1,
+                        text: "How much does Breakfast Special #1 cost?",
+                        options: [
+                            { value: "a", text: "$3.50" },
+                            { value: "b", text: "$4.99" },
+                            { value: "c", text: "$5.99" },
+                            { value: "d", text: "$6.99" }
+                        ],
+                        correct: "c"
+                    }
+                ]
+            },
+            // INTERMEDIATE (B1) - Narrative text
+            {
+                level: "intermediate",
+                title: "Yuko in Montreal",
+                content: `
+                    <h3>Yuko in Montreal</h3>
+                    <p>Yuko moved to Montreal this year. She has lived in Montreal for about eight months. When she moved to Montreal from Tokyo, she was a little nervous and scared, but now she feels very comfortable and knows the city very well. She has found a nice apartment downtown, and it's not too expensive. She has found a job teaching Japanese, and she likes it a lot. She's also seen a lot of places and done a lot of things in Montreal. For example, Yuko has been to Mount Royal, she has ridden on the Metro, she's eaten a Montreal bagel, and she's met a cute Montreal man.</p>
+                    
+                    <p>Yuko has also learned a lot of French and improved her English. She has made a lot of friends, too. Some of her friends are from Montreal, but some of them have recently moved to Montreal just like Yuko. She has been to many restaurants on Saint Laurent Street. She has also joined a jazz band. Yuko plays piano in the band. She has taken many photographs of Montreal since she arrived. She likes the brightly painted houses. She has visited many museums and art galleries. She has even survived the cold Montreal winter! She has fallen in love with the city and all its charms.</p>
+                `,
+                questions: [
+                    {
+                        id: 35,
+                        level: "intermediate",
+                        points: 2,
+                        text: "How did Yuko feel when she first moved to Montreal?",
+                        options: [
+                            { value: "a", text: "excited" },
+                            { value: "b", text: "anxious" },
+                            { value: "c", text: "angry" },
+                            { value: "d", text: "comfortable" }
+                        ],
+                        correct: "b"
+                    },
+                    {
+                        id: 36,
+                        level: "intermediate",
+                        points: 2,
+                        text: "What does Yuko do for a living?",
+                        options: [
+                            { value: "a", text: "She rides the Metro" },
+                            { value: "b", text: "She takes photographs" },
+                            { value: "c", text: "She teaches Japanese" },
+                            { value: "d", text: "She visits museums" }
+                        ],
+                        correct: "c"
+                    },
+                    {
+                        id: 37,
+                        level: "intermediate",
+                        points: 2,
+                        text: "What can be inferred about Yuko?",
+                        options: [
+                            { value: "a", text: "She likes music" },
+                            { value: "b", text: "She loves cold weather" },
+                            { value: "c", text: "She has a car" },
+                            { value: "d", text: "She doesn't speak English" }
+                        ],
+                        correct: "a"
+                    },
+                    {
+                        id: 38,
+                        level: "intermediate",
+                        points: 2,
+                        text: "Which of the following has Yuko NOT done in Montreal?",
+                        options: [
+                            { value: "a", text: "Visited Mount Royal" },
+                            { value: "b", text: "Eaten Montreal bagels" },
+                            { value: "c", text: "Learned to speak French fluently" },
+                            { value: "d", text: "Joined a jazz band" }
+                        ],
+                        correct: "c"
+                    }
+                ]
+            },
+            // ADVANCED (B2-C1) - Analytical text
+            {
+                level: "advanced",
+                title: "Influencers",
+                content: `
+                    <h3>Influencers</h3>
+                    <p>An influencer is a person who generates interest in something by posting about it on social media. Influencers are found across networking sites such as Instagram, TikTok, YouTube, and Twitter. They are often experts in a certain industry and have a large audience. Influencers encourage people to buy products, and they often promote companies, causes, and ideas through their social media channels.</p>
+                    
+                    <p>Influencers are categorized according to the number of followers they have on a single social media platform. A mega-influencer is someone who has more than one million followers. Macro-influencers have somewhere between 10,000 and one million followers, and micro-influencers have between 1,000 and 10,000 followers.</p>
+                    
+                    <p>Many companies work with influencers to sell their products. This is called influencer marketing. Fashion, beauty, food, travel, fitness, and technology are some of the most common industries to make use of influencers. Popular influencers such as Huda Kattan (beauty), Gigi Hadid (fashion), and Salt Bae (food) have over 50 million followers each on social media. Working with influencers can give brands huge reach and help them stand out in the crowded digital marketplace.</p>
+                `,
+                questions: [
+                    {
+                        id: 39,
+                        level: "advanced",
+                        points: 3,
+                        text: "Which verb or phrase does NOT describe what influencers do?",
+                        options: [
+                            { value: "a", text: "lead to believe" },
+                            { value: "b", text: "persuade" },
+                            { value: "c", text: "convince" },
+                            { value: "d", text: "discourage" }
+                        ],
+                        correct: "d"
+                    },
+                    {
+                        id: 40,
+                        level: "advanced",
+                        points: 3,
+                        text: "Which statement is true?",
+                        options: [
+                            { value: "a", text: "Huda Kattan is a macro-influencer" },
+                            { value: "b", text: "Both Gigi Hadid and Huda Kattan are mega-influencers" },
+                            { value: "c", text: "Salt Bae needs more followers to be a mega-influencer" },
+                            { value: "d", text: "Gigi Hadid is a mega-influencer, but Huda Kattan is not" }
+                        ],
+                        correct: "b"
+                    },
+                    {
+                        id: 41,
+                        level: "advanced",
+                        points: 3,
+                        text: "Why do companies like to hire influencers?",
+                        options: [
+                            { value: "a", text: "Influencers have strong opinions" },
+                            { value: "b", text: "Influencers can get a company noticed" },
+                            { value: "c", text: "Influencers have a marketing degree" },
+                            { value: "d", text: "Influencers like to be categorized" }
+                        ],
+                        correct: "b"
+                    },
+                    {
+                        id: 42,
+                        level: "advanced",
+                        points: 3,
+                        text: "Based on the article, what can be inferred about influencer marketing?",
+                        options: [
+                            { value: "a", text: "It only works for fashion and beauty products" },
+                            { value: "b", text: "It's more effective than traditional advertising in crowded markets" },
+                            { value: "c", text: "It requires influencers to have exactly one million followers" },
+                            { value: "d", text: "It's a new concept that started in 2020" }
+                        ],
+                        correct: "b"
+                    }
+                ]
+            }
         ]
     },
+
     writing: {
         title: "Part 4: Writing",
         subtitle: "Complete both writing tasks. Take your time and write carefully.",
@@ -1504,7 +2128,7 @@ async function exportToGoogleSheets() {
             await submitToGoogleForm(exportData);
         }
         
-        alert('✅ Результаты успешно отправлены преподавателю!\n\nПреподаватель проверит ваши письменные работы и отправит полный отчет на вашу почту в течение 24 часов.');
+        alert('✅ Результаты успешно отправлены!\n\n📧 Вы получите полный отчет с оценкой письма на вашу почту в течение 24 часов.\n\n🗣️ Пока ждете - запланируйте устное собеседование!');
         
     } catch (error) {
         console.error('Submission error:', error);
