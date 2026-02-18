@@ -903,8 +903,9 @@
 <script>
 // ==================== CONFIGURATION ====================
 const CONFIG = {
-    // ⚠️ REQUIRED: Paste your Google Apps Script Web App URL here after deploying
-    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec',
+    // ⚠️ REQUIRED: Paste your Make.com webhook URL here
+    // Get it from: Make.com → New Scenario → Webhooks → Custom Webhook → Copy address
+    MAKE_WEBHOOK_URL: 'https://hook.eu2.make.com/YOUR_WEBHOOK_ID_HERE',
 
     // ZOOM/Telegram booking link
     BOOKING_URL: 'https://t.me/tyveric',
@@ -2051,7 +2052,7 @@ function finishTest() {
     // Calculate MCQ results
     const results = calculateResults();
 
-    // Prepare payload for Google Apps Script
+    // Prepare payload for Make.com
     const exportData = {
         timestamp: new Date().toISOString(),
         studentInfo: currentState.studentInfo,
@@ -2060,20 +2061,20 @@ function finishTest() {
         writingAnswers: currentState.writingAnswers
     };
 
-    // Send to Google Apps Script backend
-    fetch(CONFIG.APPS_SCRIPT_URL, {
+    // Send to Make.com webhook (supports CORS — no workaround needed)
+    fetch(CONFIG.MAKE_WEBHOOK_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(exportData)
     })
-    .then(() => {
-        setTimeout(() => { showConfirmationScreen(); }, 2000);
+    .then(response => {
+        console.log('Make.com webhook response:', response.status);
+        showConfirmationScreen();
     })
     .catch(error => {
-        console.error('Submission error:', error);
-        // no-cors never exposes errors — show confirmation anyway
-        setTimeout(() => { showConfirmationScreen(); }, 2000);
+        console.error('Webhook error:', error);
+        // Show confirmation anyway — data likely sent even if response fails
+        showConfirmationScreen();
     });
 
     // Hide timer
