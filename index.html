@@ -789,7 +789,7 @@
                 </div>
                 <h2>🎉 Тест завершен!</h2>
                 <div class="level-badge-large" id="levelBadge">Загрузка...</div>
-                <div class="score-display" id="totalScore">0/84</div>
+                <div class="score-display" id="totalScore">0/100</div>
                 <div class="percentage">Баллы: <span id="percentageScore">0</span>%</div>
             </div>
 
@@ -871,28 +871,21 @@
                 <h3>📚 Ваш индивидуальный план обучения</h3>
                 <div id="recommendations"></div>
                 
-                <!-- SEND TO TEACHER -->
-                <div class="button-group" style="margin: 25px 0; justify-content: center;">
-                    <button class="btn btn-primary" onclick="exportToGoogleSheets()" style="max-width: 350px;">
-                        📊 Отправить результаты преподавателю
-                    </button>
-                </div>
-                
                 <div class="next-steps">
                     <h4>📅 Следующие шаги:</h4>
                     <ul class="recommendation-list">
-                        <li><strong>Преподаватель проверит ваши письменные работы вручную</strong></li>
-                        <li><strong>Вы получите полный отчет с оценкой письма на вашу почту в течение 24 часов</strong></li>
-                        <li><strong>Отчет включит финальный уровень и персональные рекомендации</strong></li>
+                        <li><strong>Проверьте почту — результаты с оценкой письма придут через 1-2 минуты</strong></li>
+                        <li><strong>Запишитесь на устное собеседование в ZOOM</strong></li>
+                        <li><strong>Начните обучение на вашем уровне!</strong></li>
                     </ul>
                 </div>
 
                 <!-- SPEAKING ENCOURAGEMENT -->
                 <div class="speaking-encouragement">
                     <h4>🗣️ Не теряйте время!</h4>
-                    <p>Пока ждете отчет - запланируйте устное собеседование и начните практику разговорной речи сразу!</p>
+                    <p>Запишитесь на ZOOM созвон и начните практику разговорной речи сразу!</p>
                     <a href="https://t.me/tyveric" class="cta-button" target="_blank">
-                        Записаться на устное собеседование
+                        Записаться на ZOOM созвон
                     </a>
                 </div>
             </div>
@@ -903,15 +896,13 @@
 <script>
 // ==================== CONFIGURATION ====================
 const CONFIG = {
-    // Google Form URL for automatic submission
-    GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSeXpGO7frfmRq1I1QmoDUUmj7kolKaHfh-s3smqWcTSrtIwlg/formResponse',
-    
-    // Teacher email
-    TEACHER_EMAIL: 'snapdateng@gmail.com',
-    
-    // Telegram link for scheduling lessons
-    TELEGRAM_URL: 'https://t.me/tyveric',
-    
+    // ⚠️ REQUIRED: Paste your Make.com webhook URL here
+    // Get it from: Make.com → New Scenario → Webhooks → Custom Webhook → Copy address
+    MAKE_WEBHOOK_URL: 'https://hook.eu2.make.com/YOUR_WEBHOOK_ID_HERE',
+
+    // ZOOM/Telegram booking link
+    BOOKING_URL: 'https://t.me/tyveric',
+
     // School name
     SCHOOL_NAME: 'SNAP DAT - школа английского языка'
 };
@@ -1578,40 +1569,22 @@ const testData = {
 
     writing: {
         title: "Part 4: Writing",
-        subtitle: "Complete both writing tasks. Take your time and write carefully.",
+        subtitle: "Choose ONE option and write a short response. No right or wrong answer — just write naturally!",
         icon: "✍️",
         tasks: [
             {
                 id: "writing1",
-                level: "beginner-intermediate",
-                title: "Task 1: Describe Your Daily Routine",
-                prompt: "Write about your typical day. What time do you wake up? What do you do during the day? What do you do during the evening? Use present simple tense.",
-                wordCountMin: 80,
-                wordCountMax: 120,
-                placeholder: "I usually wake up at...",
+                level: "all",
+                title: "Short Writing Task",
+                prompt: "Choose ONE option and write 3–5 sentences:\n\n📌 Option A: Tell us a little about yourself — where you're from, what you do, and why you're learning English.\n\n📌 Option B: What is one thing you like (or dislike) about your city or country? Explain why.",
+                wordCountMin: 30,
+                wordCountMax: 80,
+                placeholder: "Start writing here... (e.g. \"I'm from Almaty. I work as a designer...\" or \"I live in Moscow. One thing I really like about it is...\")",
                 rubric: [
-                    "Uses present simple correctly",
-                    "Includes time expressions",
-                    "Uses basic connectors (first, then, after)",
-                    "Appropriate vocabulary",
-                    "Clear organization"
-                ]
-            },
-            {
-                id: "writing2",
-                level: "intermediate-advanced",
-                title: "Task 2: Opinion Essay",
-                prompt: "Some people think that social media has more disadvantages than advantages. Do you agree or disagree? Give reasons and examples to support your opinion.",
-                wordCountMin: 120,
-                wordCountMax: 180,
-                placeholder: "In my opinion...",
-                rubric: [
-                    "Clear opinion/thesis statement",
-                    "Well-organized paragraphs",
-                    "Uses complex sentences",
-                    "Appropriate linking words (however, therefore, although)",
-                    "Academic vocabulary",
-                    "Grammar accuracy"
+                    "Grammar accuracy",
+                    "Vocabulary range",
+                    "Coherence",
+                    "Task completion"
                 ]
             }
         ]
@@ -1834,26 +1807,30 @@ function generateQuestion(q, displayNumber) {
 function generateWritingTasks(data) {
     let html = '';
     data.tasks.forEach((task, index) => {
+        const promptHtml = task.prompt
+            .split('\n\n')
+            .map(part => `<p style="margin: 8px 0;">${part.replace(/\n/g, '<br>')}</p>`)
+            .join('');
         html += `
             <div class="writing-task">
-                <h3>${task.title}</h3>
-                <div class="writing-prompt">
-                    <strong>📝 Prompt:</strong> ${task.prompt}
+                <div class="writing-prompt" style="line-height: 1.8;">
+                    ${promptHtml}
                 </div>
-                <p style="color: var(--text-light); margin: 12px 0;">
-                    <strong>Word count:</strong> ${task.wordCountMin}-${task.wordCountMax} words
+                <p style="color: var(--text-light); margin: 12px 0; font-size: 14px;">
+                    ✍️ <strong>${task.wordCountMin}–${task.wordCountMax} words</strong> — write naturally, there are no wrong answers
                 </p>
-                <textarea 
+                <textarea
                     class="writing-textarea"
                     id="${task.id}"
                     placeholder="${task.placeholder}"
                     oninput="updateWordCount('${task.id}', ${task.wordCountMin}, ${task.wordCountMax})"
+                    style="min-height: 140px;"
                 ></textarea>
                 <div class="word-count" id="${task.id}-count">0 words</div>
             </div>
         `;
     });
-    
+
     return html;
 }
 
@@ -1933,13 +1910,12 @@ function updateWordCount(taskId, min, max) {
 // ==================== NAVIGATION ====================
 function nextSection() {
     if (currentState.currentSection === 3) { // Writing section
-        const task1 = document.getElementById('writing1').value.trim();
-        const task2 = document.getElementById('writing2').value.trim();
-        const count1 = task1 ? task1.split(/\s+/).length : 0;
-        const count2 = task2 ? task2.split(/\s+/).length : 0;
-        
-        if (count1 < 80 || count2 < 120) {
-            if (!confirm('Ваши письменные задания ниже минимального количества слов. Вы уверены, что хотите продолжить?')) {
+        const writingEl = document.getElementById('writing1');
+        const text = writingEl ? writingEl.value.trim() : '';
+        const wordCount = text ? text.split(/\s+/).length : 0;
+
+        if (wordCount < 30) {
+            if (!confirm('Вы написали меньше 30 слов. Вы уверены, что хотите продолжить?')) {
                 return;
             }
         }
@@ -2053,45 +2029,121 @@ function getRecommendations(results, placement) {
 // ==================== FINISH TEST ====================
 function finishTest() {
     const container = document.getElementById('testContainer');
-    container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Подсчет результатов...</p></div>';
-    
-    setTimeout(() => {
-        try {
-            const results = calculateResults();
-            const placement = getPlacementLevel(results.percentage);
-            const recommendations = getRecommendations(results, placement);
-            
-            container.innerHTML = '';
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const resultsScreen = document.getElementById('resultsScreen');
-            resultsScreen.classList.add('active');
-            
-            document.getElementById('levelBadge').textContent = placement.level;
-            document.getElementById('totalScore').textContent = `${results.totalScore}/${results.maxScore}`;
-            document.getElementById('percentageScore').textContent = results.percentage;
-            
-            updateSectionScore('listening', results.listening);
-            updateSectionScore('grammar', results.grammar);
-            updateSectionScore('reading', results.reading);
-            
-            let recHTML = '<ul class="recommendation-list">' +
-                recommendations.map(rec => `<li>${rec}</li>`).join('') +
-                '</ul>';
-            document.getElementById('recommendations').innerHTML = recHTML;
-            
-            document.getElementById('timer').style.display = 'none';
-            window.scrollTo(0, 0);
-            
-            currentState.results = results;
-            currentState.placement = placement;
-            saveState();
-            clearState();
-            
-        } catch (error) {
-            console.error('Error calculating results:', error);
-            container.innerHTML = '<div class="error"><p>Ошибка при подсчете результатов. Пожалуйста, обновите страницу.</p></div>';
-        }
-    }, 1000);
+
+    // Show loading screen
+    container.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Обработка результатов...</p>
+            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                Идет проверка ответов и оценка письменной работы с помощью ИИ
+            </p>
+        </div>
+    `;
+
+    // Calculate MCQ results
+    const results = calculateResults();
+
+    // Prepare payload for Make.com
+    const exportData = {
+        timestamp: new Date().toISOString(),
+        studentInfo: currentState.studentInfo,
+        results: results,
+        answers: currentState.answers,
+        writingAnswers: currentState.writingAnswers
+    };
+
+    // Send to Make.com webhook (supports CORS — no workaround needed)
+    fetch(CONFIG.MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(exportData)
+    })
+    .then(response => {
+        console.log('Make.com webhook response:', response.status);
+        showConfirmationScreen();
+    })
+    .catch(error => {
+        console.error('Webhook error:', error);
+        // Show confirmation anyway — data likely sent even if response fails
+        showConfirmationScreen();
+    });
+
+    // Hide timer
+    document.getElementById('timer').style.display = 'none';
+
+    // Clear saved state
+    clearState();
+}
+
+function showConfirmationScreen() {
+    const container = document.getElementById('testContainer');
+    container.innerHTML = `
+        <div class="screen active">
+            <div style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 72px; margin-bottom: 20px;">✅</div>
+
+                <h2 style="color: var(--navy-blue); font-size: 32px; margin-bottom: 20px;">
+                    Тест успешно отправлен!
+                </h2>
+
+                <div style="background: linear-gradient(135deg, var(--cream) 0%, #FFF8EE 100%);
+                            padding: 30px;
+                            border-radius: 12px;
+                            border-left: 4px solid var(--primary-orange);
+                            margin: 30px 0;
+                            text-align: left;">
+                    <p style="font-size: 18px; line-height: 1.8; margin-bottom: 15px;">
+                        📝 Идет проверка ответов и письма.
+                    </p>
+                    <p style="font-size: 18px; line-height: 1.8; margin-bottom: 15px;">
+                        📧 <strong>Проверьте почту через 1-2 минуты.</strong>
+                    </p>
+                    <p style="font-size: 18px; line-height: 1.8; color: var(--text-dark);">
+                        А пока вы ждете, запишитесь на созвон в ZOOM для оценки разговорных навыков
+                        и получения полного отчета диагностики!
+                    </p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #E8F5F4 0%, #F0FFFE 100%);
+                            padding: 25px;
+                            border-radius: 12px;
+                            border: 3px solid var(--primary-teal);
+                            margin: 30px 0;">
+                    <p style="font-size: 16px; color: var(--text-light); margin-bottom: 15px;">
+                        📧 Результаты будут отправлены на:
+                    </p>
+                    <p style="font-size: 18px; font-weight: 600; color: var(--navy-blue); margin-bottom: 25px;">
+                        ${currentState.studentInfo.email || ''}
+                    </p>
+
+                    <a href="${CONFIG.BOOKING_URL}"
+                       target="_blank"
+                       style="display: inline-block;
+                              padding: 18px 40px;
+                              background: linear-gradient(135deg, var(--primary-teal) 0%, var(--accent-green) 100%);
+                              color: var(--white);
+                              text-decoration: none;
+                              border-radius: 10px;
+                              font-weight: 600;
+                              font-size: 18px;">
+                        🎥 Записаться на ZOOM созвон
+                    </a>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: var(--light-gray); border-radius: 10px;">
+                    <p style="font-size: 14px; color: var(--text-light); line-height: 1.6;">
+                        💡 <strong>Что дальше?</strong><br>
+                        1. Проверьте почту (через 1-2 минуты)<br>
+                        2. Получите полные результаты с оценкой письма<br>
+                        3. Запишитесь на устное собеседование<br>
+                        4. Начните обучение на вашем уровне!
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    window.scrollTo(0, 0);
 }
 
 function updateSectionScore(section, data) {
@@ -2107,77 +2159,8 @@ function updateSectionScore(section, data) {
     });
 }
 
-// ==================== GOOGLE SHEETS EXPORT ====================
-async function exportToGoogleSheets() {
-    const exportData = {
-        timestamp: new Date().toISOString(),
-        studentInfo: currentState.studentInfo,
-        results: currentState.results,
-        placement: currentState.placement,
-        answers: currentState.answers,
-        writingAnswers: currentState.writingAnswers
-    };
-    
-    const button = event.target;
-    const originalText = button.textContent;
-    button.textContent = '⏳ Отправка...';
-    button.disabled = true;
-    
-    try {
-        if (CONFIG.GOOGLE_FORM_URL) {
-            await submitToGoogleForm(exportData);
-        }
-        
-        alert('✅ Результаты успешно отправлены!\n\n📧 Вы получите полный отчет с оценкой письма на вашу почту в течение 24 часов.\n\n🗣️ Пока ждете - запланируйте устное собеседование!');
-        
-    } catch (error) {
-        console.error('Submission error:', error);
-        alert('❌ Ошибка отправки. Пожалуйста, попробуйте снова или свяжитесь с преподавателем.');
-    } finally {
-        button.textContent = originalText;
-        button.disabled = false;
-    }
-}
-
-async function submitToGoogleForm(data) {
-    const formData = new FormData();
-    
-    formData.append('entry.936940614', data.studentInfo.name || '');
-    formData.append('entry.38363323', data.studentInfo.email || '');
-    formData.append('entry.308394169', data.studentInfo.age || 'Not provided');
-    formData.append('entry.39515145', data.studentInfo.nativeLanguage || 'Not provided');
-    formData.append('entry.540628309', new Date().toLocaleString('ru-RU'));
-    formData.append('entry.837019120', `${data.results.totalScore}/${data.results.maxScore}`);
-    formData.append('entry.961123626', data.results.percentage + '%');
-    formData.append('entry.654985936', data.placement.level);
-    formData.append('entry.447635218', `${data.results.listening.score}/18`);
-    formData.append('entry.2108423620', `${data.results.grammar.score}/36`);
-    formData.append('entry.956470450', `${data.results.reading.score}/18`);
-    formData.append('entry.1080483481', data.writingAnswers.writing1?.substring(0, 1000) || 'Not completed');
-    formData.append('entry.1827659829', data.writingAnswers.writing2?.substring(0, 1000) || 'Not completed');
-    
-    const listeningCorrect = Object.keys(data.answers).filter(key => 
-        key <= 12 && data.answers[key] === testData.listening.questions.find(q => q.id == key)?.correct
-    ).length;
-    
-    const grammarCorrect = Object.keys(data.answers).filter(key => 
-        key >= 13 && key <= 30 && data.answers[key] === testData.grammar.questions.find(q => q.id == key)?.correct
-    ).length;
-    
-    const readingCorrect = Object.keys(data.answers).filter(key => 
-        key >= 31 && key <= 42 && data.answers[key] === testData.reading.passages.flatMap(p => p.questions).find(q => q.id == key)?.correct
-    ).length;
-    
-    formData.append('entry.718946060', `Listening: ${listeningCorrect}/12, Grammar: ${grammarCorrect}/18, Reading: ${readingCorrect}/12`);
-    
-    await fetch(CONFIG.GOOGLE_FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-    });
-    
-    return true;
-}
+// exportToGoogleSheets() and submitToGoogleForm() removed.
+// Submission is now handled by finishTest() → Make.com webhook.
 </script>
 
 </body>

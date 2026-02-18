@@ -1,18 +1,19 @@
 // ==================== CLAUDE API WRITING EVALUATION ====================
-// This is the UPDATED grading function for google-apps-script.js
-// Replace the existing gradeWritingWithClaude() function with this version
+// Single short writing task (Duolingo-style), 4-criterion 28-point rubric.
+// This mirrors the gradeWritingWithClaude() in google-apps-script.js.
 
-function gradeWritingWithClaude(task1, task2) {
-  // Validate inputs
-  if (!task1 || task1.trim().length < 20) {
-    task1 = '[Not completed]';
-  }
-  if (!task2 || task2.trim().length < 20) {
-    task2 = '[Not completed]';
+function gradeWritingWithClaude(writingText) {
+  // Validate input
+  if (!writingText || writingText.trim().length < 10) {
+    writingText = '[Not completed]';
   }
 
-  // ==================== CLAUDE API SYSTEM PROMPT ====================
-  const systemPrompt = `You are an expert ESL teacher evaluating English placement test writing samples.
+  // ==================== CLAUDE API PROMPT ====================
+  const systemPrompt = `You are an expert ESL teacher evaluating a short English placement test writing sample.
+
+The student was asked to write 3–5 sentences choosing one of:
+Option A: Tell us about yourself — where you're from, what you do, and why you're learning English.
+Option B: What is one thing you like (or dislike) about your city or country? Explain why.
 
 IMPORTANT: Respond ONLY with valid JSON. No markdown, no code blocks, no explanations outside the JSON.
 
@@ -33,23 +34,17 @@ SCORING RUBRIC (28 points total):
    - 0: Cannot assess
 
 3. COHERENCE & ORGANIZATION (0-7 points):
-   - 6-7: Excellent structure, clear progression, effective linking
-   - 4-5: Generally well-organized, adequate paragraphing
-   - 2-3: Basic organization, limited use of cohesive devices
-   - 1: Poor organization, difficult to follow
+   - 6-7: Clear flow, ideas progress logically, effective connectors
+   - 4-5: Generally well-organized, some linking words
+   - 2-3: Simple linking (and/but/so), some jumps
+   - 1: Poor organization, ideas disconnected
    - 0: Cannot assess
 
 4. TASK COMPLETION (0-6 points):
-   - 5-6: Fully addresses prompt, appropriate length, well-developed
-   - 3-4: Addresses main points, adequate development
-   - 1-2: Partially addresses prompt, underdeveloped
-   - 0: Does not address prompt or too short
-
-EVALUATION APPROACH:
-- Evaluate BOTH tasks together as one writing sample
-- Consider the tasks complement each other (Task 1 shows basic ability, Task 2 shows higher-level skills)
-- Apply the rubric holistically across both tasks
-- Total must equal 28 points or less
+   - 5-6: Fully addresses prompt, appropriate length (3-5 sentences), developed
+   - 3-4: Addresses main point, reasonable length
+   - 1-2: Partially addresses prompt, too short, underdeveloped
+   - 0: Does not address prompt or too short to assess
 
 Your response must be valid JSON in this EXACT format:
 {
@@ -76,26 +71,12 @@ Your response must be valid JSON in this EXACT format:
   "improvements": ["[area 1 in Russian]", "[area 2 in Russian]"]
 }`;
 
-  // ==================== USER PROMPT WITH WRITING SAMPLES ====================
-  const userPrompt = `Evaluate these two writing samples from an English placement test:
+  // ==================== USER PROMPT WITH WRITING SAMPLE ====================
+  const userPrompt = `Evaluate this short writing sample from an English placement test (target: 3–5 sentences, 30–80 words):
 
-TASK 1 - Daily Routine (Target: 80-120 words, A1-A2 level):
-Prompt: "Write about your typical day. What time do you wake up? What do you do during the day? What do you do during the evening? Use present simple tense."
+${writingText}
 
-Student response:
-${task1}
-
----
-
-TASK 2 - Opinion Essay (Target: 120-180 words, B1-B2 level):
-Prompt: "Some people think that social media has more disadvantages than advantages. Do you agree or disagree? Give reasons and examples to support your opinion."
-
-Student response:
-${task2}
-
----
-
-Evaluate BOTH tasks together using the 28-point rubric. Return ONLY the JSON response, no other text.`;
+Apply the 28-point rubric. Return ONLY the JSON response, no other text.`;
 
   // ==================== CALL CLAUDE API ====================
   const payload = {
@@ -268,7 +249,6 @@ function saveToSheet(data, results, writingAssessment) {
     results.level,
     writingAssessment.overallLevel || 'N/A',
     data.writingAnswers.writing1 || '[Не выполнено]',
-    data.writingAnswers.writing2 || '[Не выполнено]',
     writingAssessment.overallFeedback
   ]);
 
@@ -408,12 +388,10 @@ function sendStudentEmail(studentInfo, results, writingAssessment) {
 function testWritingEvaluation() {
   Logger.log('Testing writing evaluation with new rubric...');
 
-  const testWriting1 = `I wake up at 7 AM every morning. First, I eat breakfast with my family. Then I go to work by bus. I work in an office from 9 to 5. After work, I go home and watch TV. I go to bed at 11 PM.`;
-
-  const testWriting2 = `In my opinion, social media has both advantages and disadvantages, but I think the advantages are more important. First, social media helps us stay connected with friends and family who live far away. For example, I use WhatsApp to talk to my sister in another country. Second, we can learn new things from social media. However, some people spend too much time on social media and this is not healthy. In conclusion, I believe social media is good if we use it carefully.`;
+  const testWriting = `I'm from Almaty, Kazakhstan. I work as a marketing manager and I really enjoy my job. I'm learning English because I want to communicate with clients from different countries and travel more confidently.`;
 
   try {
-    const result = gradeWritingWithClaude(testWriting1, testWriting2);
+    const result = gradeWritingWithClaude(testWriting);
 
     Logger.log('\n=== WRITING EVALUATION RESULTS ===');
     Logger.log('Grammar & Accuracy: ' + result.grammar.score + '/8');
