@@ -30,7 +30,11 @@ const CONFIG = {
 // ==================== MAIN HANDLER ====================
 function doPost(e) {
   try {
-    const raw = e.postData.contents;
+    // FormData submissions arrive in e.parameter.data
+    // Raw JSON submissions arrive in e.postData.contents
+    const raw = (e.parameter && e.parameter.data)
+                  ? e.parameter.data
+                  : e.postData.contents;
     const data = JSON.parse(raw);
     Logger.log('Received submission from: ' + (data.studentInfo && data.studentInfo.name));
 

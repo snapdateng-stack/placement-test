@@ -2071,12 +2071,15 @@ function finishTest() {
         console.error('⚠️ APPS_SCRIPT_URL is not set in CONFIG. Deploy google-apps-script.js as a Web App and paste the URL here.');
     }
 
-    // Google Apps Script requires no-cors (it does not return CORS headers)
+    // Use FormData — Apps Script reads FormData from e.parameter, which survives
+    // the internal redirect that drops raw POST bodies (no-cors mode).
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(exportData));
+
     fetch(CONFIG.APPS_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(exportData)
+        body: formData
     })
     .then(() => {
         showConfirmationScreen();
