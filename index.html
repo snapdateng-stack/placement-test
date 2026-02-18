@@ -737,7 +737,7 @@
                         <li><strong>Часть 1: Аудирование</strong> - 12 вопросов</li>
                         <li><strong>Часть 2: Грамматика</strong> - 18 вопросов</li>
                         <li><strong>Часть 3: Чтение</strong> - 12 вопросов</li>
-                        <li><strong>Часть 4: Письмо</strong> - 2 задания (80-150 слов каждое)</li>
+                        <li><strong>Часть 4: Письмо</strong> - 3–5 предложений</li>
                     </ul>
                 </div>
 
@@ -896,9 +896,9 @@
 <script>
 // ==================== CONFIGURATION ====================
 const CONFIG = {
-    // ⚠️ REQUIRED: Paste your Make.com webhook URL here
-    // Get it from: Make.com → New Scenario → Webhooks → Custom Webhook → Copy address
-    MAKE_WEBHOOK_URL: 'https://hook.eu2.make.com/YOUR_WEBHOOK_ID_HERE',
+    // ⚠️ REQUIRED: Google Apps Script Web App URL (saves raw data to Google Sheets)
+    // Deploy google-apps-script.js as a Web App and paste the URL here
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec',
 
     // ZOOM/Telegram booking link
     BOOKING_URL: 'https://t.me/tyveric',
@@ -1568,18 +1568,18 @@ const testData = {
     },
 
     writing: {
-        title: "Part 4: Writing",
-        subtitle: "Choose ONE option and write a short response. No right or wrong answer — just write naturally!",
+        title: "Часть 4: Письмо",
+        subtitle: "Напишите 3–5 предложений на английском языке. Правильных и неправильных ответов нет — пишите как умеете.",
         icon: "✍️",
         tasks: [
             {
                 id: "writing1",
                 level: "all",
-                title: "Short Writing Task",
-                prompt: "Choose ONE option and write 3–5 sentences:\n\n📌 Option A: Tell us a little about yourself — where you're from, what you do, and why you're learning English.\n\n📌 Option B: What is one thing you like (or dislike) about your city or country? Explain why.",
+                title: "",
+                prompt: "Выберите ОДИН вариант и напишите 3–5 предложений на английском:\n\n📌 Вариант A: Tell us a little about yourself — where you're from, what you do, and why you're learning English.\n\n📌 Вариант B: What is one thing you like (or dislike) about your city or country? Explain why.",
                 wordCountMin: 30,
                 wordCountMax: 80,
-                placeholder: "Start writing here... (e.g. \"I'm from Almaty. I work as a designer...\" or \"I live in Moscow. One thing I really like about it is...\")",
+                placeholder: "Начните писать здесь... (например: \"I'm from Almaty. I work as a designer...\")",
                 rubric: [
                     "Grammar accuracy",
                     "Vocabulary range",
@@ -1618,6 +1618,14 @@ function loadState() {
 
 function clearState() {
     localStorage.removeItem(STATE_KEY);
+    // Also wipe in-memory answers so a retake starts completely fresh
+    currentState.answers = {};
+    currentState.writingAnswers = {};
+    currentState.currentSection = 0;
+    currentState.currentQuestion = 0;
+    currentState.studentInfo = {};
+    currentState.startTime = null;
+    currentState.timeRemaining = 3000;
 }
 
 // ==================== INITIALIZATION ====================
@@ -1658,8 +1666,13 @@ function startTest() {
         nativeLanguage: document.getElementById('studentNative').value,
         testDate: new Date().toISOString()
     };
-    
+    currentState.answers = {};
+    currentState.writingAnswers = {};
+    currentState.currentSection = 0;
+    currentState.currentQuestion = 0;
     currentState.startTime = Date.now();
+    currentState.timeRemaining = 3000;
+
     document.getElementById('welcomeScreen').classList.remove('active');
     startTimer();
     generateSection();
@@ -1817,7 +1830,7 @@ function generateWritingTasks(data) {
                     ${promptHtml}
                 </div>
                 <p style="color: var(--text-light); margin: 12px 0; font-size: 14px;">
-                    ✍️ <strong>${task.wordCountMin}–${task.wordCountMax} words</strong> — write naturally, there are no wrong answers
+                    ✍️ <strong>3–5 предложений</strong>
                 </p>
                 <textarea
                     class="writing-textarea"
@@ -1826,7 +1839,7 @@ function generateWritingTasks(data) {
                     oninput="updateWordCount('${task.id}', ${task.wordCountMin}, ${task.wordCountMax})"
                     style="min-height: 140px;"
                 ></textarea>
-                <div class="word-count" id="${task.id}-count">0 words</div>
+                <div class="word-count" id="${task.id}-count">0 слов</div>
             </div>
         `;
     });
@@ -1841,10 +1854,10 @@ function generateNavigationButtons() {
     
     return `
         <div class="button-group">
-            ${!isFirstSection ? '<button class="btn btn-secondary" onclick="previousSection()">← Previous Section</button>' : ''}
-            ${!isLastSection ? 
-                '<button class="btn btn-primary" onclick="nextSection()">Next Section →</button>' :
-                '<button class="btn btn-primary" onclick="finishTest()">Submit Test 🎯</button>'
+            ${!isFirstSection ? '<button class="btn btn-secondary" onclick="previousSection()">← Назад</button>' : ''}
+            ${!isLastSection ?
+                '<button class="btn btn-primary" onclick="nextSection()">Далее →</button>' :
+                '<button class="btn btn-primary" onclick="finishTest()">Отправить тест 🎯</button>'
             }
         </div>
     `;
@@ -1896,7 +1909,7 @@ function updateWordCount(taskId, min, max) {
     currentState.writingAnswers[taskId] = textarea.value;
     saveState();
     
-    countEl.textContent = `${wordCount} words`;
+    countEl.textContent = `${wordCount} слов`;
     
     if (wordCount < min) {
         countEl.className = 'word-count warning';
@@ -2053,19 +2066,25 @@ function finishTest() {
         writingAnswers: currentState.writingAnswers
     };
 
-    // Send to Make.com webhook (supports CORS — no workaround needed)
-    fetch(CONFIG.MAKE_WEBHOOK_URL, {
+    // Guard: warn if URL is still placeholder
+    if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID_HERE')) {
+        console.error('⚠️ APPS_SCRIPT_URL is not set in CONFIG. Deploy google-apps-script.js as a Web App and paste the URL here.');
+    }
+
+    // Google Apps Script requires no-cors (it does not return CORS headers)
+    fetch(CONFIG.APPS_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(exportData)
     })
-    .then(response => {
-        console.log('Make.com webhook response:', response.status);
+    .then(() => {
         showConfirmationScreen();
     })
     .catch(error => {
-        console.error('Webhook error:', error);
-        // Show confirmation anyway — data likely sent even if response fails
+        console.error('Submission error:', error);
+        console.error('Check: 1) APPS_SCRIPT_URL is correct  2) Script is deployed as Web App with "Anyone" access');
+        // Still show confirmation — student experience should not be affected
         showConfirmationScreen();
     });
 
@@ -2140,10 +2159,23 @@ function showConfirmationScreen() {
                         4. Начните обучение на вашем уровне!
                     </p>
                 </div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="retakeTest()"
+                            style="background: none; border: none; color: var(--text-light);
+                                   font-size: 13px; cursor: pointer; text-decoration: underline;">
+                        Пройти тест заново
+                    </button>
+                </div>
             </div>
         </div>
     `;
     window.scrollTo(0, 0);
+}
+
+function retakeTest() {
+    clearState();
+    location.reload();
 }
 
 function updateSectionScore(section, data) {
