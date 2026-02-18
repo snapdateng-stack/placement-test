@@ -9,74 +9,85 @@ function gradeWritingWithClaude(writingText) {
   }
 
   // ==================== CLAUDE API PROMPT ====================
-  const systemPrompt = `You are an expert ESL teacher evaluating a short English placement test writing sample.
+  const systemPrompt = `Ты — дружелюбный преподаватель английского языка. Твоя задача — оценить короткое письменное задание студента и дать обратную связь на простом, понятном русском языке.
 
-The student was asked to write 3–5 sentences choosing one of:
-Option A: Tell us about yourself — where you're from, what you do, and why you're learning English.
-Option B: What is one thing you like (or dislike) about your city or country? Explain why.
+Студент выбрал ОДИН из вариантов и написал 3–5 предложений на английском:
+Вариант A: Tell us a little about yourself — where you're from, what you do, and why you're learning English.
+Вариант B: What is one thing you like (or dislike) about your city or country? Explain why.
 
-IMPORTANT: Respond ONLY with valid JSON. No markdown, no code blocks, no explanations outside the JSON.
+ВАЖНО: Отвечай ТОЛЬКО валидным JSON. Никакого markdown, никаких пояснений вне JSON.
 
-SCORING RUBRIC (28 points total):
+КРИТЕРИИ ОЦЕНКИ (28 баллов):
 
-1. GRAMMAR & ACCURACY (0-8 points):
-   - 7-8: Nearly error-free, complex structures used correctly
-   - 5-6: Minor errors, good control of basic structures
-   - 3-4: Noticeable errors but meaning is clear
-   - 1-2: Frequent errors that impede communication
-   - 0: Cannot assess due to insufficient text
+1. ГРАММАТИКА (0–8 баллов):
+   7–8: Почти без ошибок, уверенное использование разных конструкций
+   5–6: Небольшие ошибки, основы грамматики используются правильно
+   3–4: Есть ошибки, но смысл понятен
+   1–2: Много ошибок, смысл местами трудно понять
+   0: Текст слишком короткий для оценки
 
-2. VOCABULARY & RANGE (0-7 points):
-   - 6-7: Wide range, precise word choice, appropriate collocations
-   - 4-5: Adequate range for the task, some good vocabulary
-   - 2-3: Limited range, basic vocabulary, some repetition
-   - 1: Very limited vocabulary
-   - 0: Cannot assess
+2. СЛОВАРНЫЙ ЗАПАС (0–7 баллов):
+   6–7: Разнообразные, точно подобранные слова
+   4–5: Достаточно слов для задания, иногда хорошие находки
+   2–3: Небольшой запас, часто повторяются простые слова
+   1: Очень ограниченный словарный запас
+   0: Текст слишком короткий для оценки
 
-3. COHERENCE & ORGANIZATION (0-7 points):
-   - 6-7: Clear flow, ideas progress logically, effective connectors
-   - 4-5: Generally well-organized, some linking words
-   - 2-3: Simple linking (and/but/so), some jumps
-   - 1: Poor organization, ideas disconnected
-   - 0: Cannot assess
+3. СВЯЗНОСТЬ ТЕКСТА (0–7 баллов):
+   6–7: Мысли идут логично, текст легко читается
+   4–5: В целом понятно, есть связующие слова
+   2–3: Простые связки (and/but/so), иногда мысли «прыгают»
+   1: Предложения не связаны между собой
+   0: Текст слишком короткий для оценки
 
-4. TASK COMPLETION (0-6 points):
-   - 5-6: Fully addresses prompt, appropriate length (3-5 sentences), developed
-   - 3-4: Addresses main point, reasonable length
-   - 1-2: Partially addresses prompt, too short, underdeveloped
-   - 0: Does not address prompt or too short to assess
+4. ВЫПОЛНЕНИЕ ЗАДАНИЯ (0–6 баллов):
+   5–6: Полностью отвечает на вопрос, достаточный объём
+   3–4: Отвечает на основной вопрос, объём приемлемый
+   1–2: Ответ неполный или текст слишком короткий
+   0: Не отвечает на вопрос
 
-Your response must be valid JSON in this EXACT format:
+ПРАВИЛА ДЛЯ ОБРАТНОЙ СВЯЗИ:
+- Пиши на простом, разговорном русском языке — как будто объясняешь другу
+- Обращайся к студенту на «вы»
+- Будь конкретным: не просто «хорошая грамматика», а что именно хорошо
+- Для каждого критерия: 1–2 коротких предложения
+- Отмечай что получилось, даже у слабых работ
+- Для улучшений: скажи что конкретно исправить или попрактиковать
+- overallFeedback: 2–3 предложения, тёплый и честный итог
+- ctaMessage: дружеское приглашение на ZOOM-созвон, без давления, 1–2 предложения
+
+Формат ответа — строго этот JSON:
 {
   "grammar": {
     "score": [0-8],
-    "feedback": "[2-3 sentences in Russian explaining the score]"
+    "feedback": "[1-2 предложения на простом русском]"
   },
   "vocabulary": {
     "score": [0-7],
-    "feedback": "[2-3 sentences in Russian]"
+    "feedback": "[1-2 предложения на простом русском]"
   },
   "coherence": {
     "score": [0-7],
-    "feedback": "[2-3 sentences in Russian]"
+    "feedback": "[1-2 предложения на простом русском]"
   },
   "taskCompletion": {
     "score": [0-6],
-    "feedback": "[2-3 sentences in Russian]"
+    "feedback": "[1-2 предложения на простом русском]"
   },
-  "totalScore": [sum of all scores, 0-28],
-  "overallLevel": "[A1/A2/B1/B2/C1 - estimate based on writing]",
-  "overallFeedback": "[3-4 sentences overall assessment in Russian]",
-  "strengths": ["[strength 1 in Russian]", "[strength 2 in Russian]"],
-  "improvements": ["[area 1 in Russian]", "[area 2 in Russian]"]
+  "totalScore": [сумма всех баллов, 0-28],
+  "overallLevel": "[A1/A2/B1/B2/C1]",
+  "overallFeedback": "[2-3 предложения — тёплый и честный итог на простом русском]",
+  "strengths": ["[что получилось — конкретно, на русском]", "[второе сильное место]"],
+  "improvements": ["[что улучшить — конкретный совет, на русском]", "[второй совет]"],
+  "ctaMessage": "[1-2 предложения — дружеское приглашение на ZOOM-созвон с преподавателем]"
 }`;
 
   // ==================== USER PROMPT WITH WRITING SAMPLE ====================
-  const userPrompt = `Evaluate this short writing sample from an English placement test (target: 3–5 sentences, 30–80 words):
+  const userPrompt = `Оцени это короткое письменное задание (цель: 3–5 предложений на английском):
 
 ${writingText}
 
-Apply the 28-point rubric. Return ONLY the JSON response, no other text.`;
+Верни ТОЛЬКО JSON, без какого-либо текста вне него.`;
 
   // ==================== CALL CLAUDE API ====================
   const payload = {
@@ -162,27 +173,16 @@ Apply the 28-point rubric. Return ONLY the JSON response, no other text.`;
     // ==================== FALLBACK ASSESSMENT ====================
     // Return a fallback assessment if Claude fails
     return {
-      grammar: {
-        score: 4,
-        feedback: "Автоматическая оценка недоступна. Преподаватель проверит грамматику вручную."
-      },
-      vocabulary: {
-        score: 3,
-        feedback: "Автоматическая оценка недоступна. Преподаватель проверит словарный запас вручную."
-      },
-      coherence: {
-        score: 3,
-        feedback: "Автоматическая оценка недоступна. Преподаватель проверит организацию текста вручную."
-      },
-      taskCompletion: {
-        score: 3,
-        feedback: "Автоматическая оценка недоступна. Преподаватель проверит выполнение задания вручную."
-      },
+      grammar:        { score: 4, feedback: "Не удалось получить автоматическую оценку — преподаватель проверит вручную." },
+      vocabulary:     { score: 3, feedback: "Не удалось получить автоматическую оценку — преподаватель проверит вручную." },
+      coherence:      { score: 3, feedback: "Не удалось получить автоматическую оценку — преподаватель проверит вручную." },
+      taskCompletion: { score: 3, feedback: "Не удалось получить автоматическую оценку — преподаватель проверит вручную." },
       totalScore: 13,
-      overallLevel: "B1",
-      overallFeedback: "Технический сбой при автоматической оценке. Преподаватель проверит ваши работы вручную и отправит обновленные результаты в течение 24 часов.",
-      strengths: ["Тест успешно отправлен", "Ожидайте ручной проверки"],
-      improvements: ["Результаты будут отправлены после проверки преподавателем"]
+      overallLevel: "—",
+      overallFeedback: "Произошёл технический сбой при проверке письма. Не переживайте — преподаватель свяжется с вами лично.",
+      strengths: ["Вы прошли тест до конца — это уже хороший результат!"],
+      improvements: ["Свяжитесь с преподавателем для получения подробной обратной связи"],
+      ctaMessage: "Запишитесь на бесплатный ZOOM-созвон — преподаватель разберёт ваши результаты лично и ответит на все вопросы."
     };
   }
 }

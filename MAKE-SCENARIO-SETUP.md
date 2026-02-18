@@ -90,7 +90,7 @@ https://api.anthropic.com/v1/messages
 
 **Content type:** `application/json`
 
-**Request content** (paste this exactly, the `{{...}}` part pulls from webhook):
+**Request content** (paste this exactly — replace `{{1.writingAnswers.writing1}}` by clicking inside and selecting the field from the dropdown):
 ```json
 {
   "model": "claude-3-5-sonnet-20241022",
@@ -99,13 +99,11 @@ https://api.anthropic.com/v1/messages
   "messages": [
     {
       "role": "user",
-      "content": "You are an expert ESL teacher grading a short English placement test writing sample.\n\nThe student was asked to write 3-5 sentences choosing one of:\nOption A: Tell us about yourself — where you're from, what you do, and why you're learning English.\nOption B: What is one thing you like (or dislike) about your city or country? Explain why.\n\nSCORING RUBRIC (28 points total):\n1. GRAMMAR & ACCURACY (0-8): 7-8=nearly error-free; 5-6=minor errors; 3-4=errors but clear; 1-2=frequent errors; 0=cannot assess\n2. VOCABULARY & RANGE (0-7): 6-7=wide range; 4-5=adequate; 2-3=limited; 1=very basic; 0=cannot assess\n3. COHERENCE & ORGANIZATION (0-7): 6-7=clear flow; 4-5=generally organized; 2-3=simple linking; 1=poor; 0=cannot assess\n4. TASK COMPLETION (0-6): 5-6=fully addresses prompt; 3-4=addresses main point; 1-2=partial; 0=does not address\n\nSTUDENT'S WRITING:\n{{1.writingAnswers.writing1}}\n\nRespond ONLY with valid JSON, no markdown, no code blocks:\n{\"grammar\":{\"score\":0,\"feedback\":\"Russian text\"},\"vocabulary\":{\"score\":0,\"feedback\":\"Russian text\"},\"coherence\":{\"score\":0,\"feedback\":\"Russian text\"},\"taskCompletion\":{\"score\":0,\"feedback\":\"Russian text\"},\"totalScore\":0,\"overallLevel\":\"A1\",\"overallFeedback\":\"Russian text\",\"strengths\":[\"Russian\",\"Russian\"],\"improvements\":[\"Russian\",\"Russian\"]}"
+      "content": "Ты — дружелюбный преподаватель английского языка. Твоя задача — оценить короткое письменное задание студента и дать обратную связь на простом, понятном русском языке.\n\nСтудент выбрал ОДИН из вариантов и написал 3–5 предложений на английском:\nВариант A: Tell us a little about yourself — where you're from, what you do, and why you're learning English.\nВариант B: What is one thing you like (or dislike) about your city or country? Explain why.\n\nКРИТЕРИИ ОЦЕНКИ (28 баллов):\n1. ГРАММАТИКА (0–8): 7-8=почти без ошибок; 5-6=мелкие ошибки; 3-4=ошибки но смысл понятен; 1-2=много ошибок; 0=текст слишком короткий\n2. СЛОВАРНЫЙ ЗАПАС (0–7): 6-7=разнообразные точные слова; 4-5=достаточно для задания; 2-3=небольшой запас; 1=очень ограниченный; 0=текст слишком короткий\n3. СВЯЗНОСТЬ ТЕКСТА (0–7): 6-7=мысли идут логично; 4-5=в целом понятно; 2-3=простые связки; 1=предложения не связаны; 0=текст слишком короткий\n4. ВЫПОЛНЕНИЕ ЗАДАНИЯ (0–6): 5-6=полностью отвечает на вопрос; 3-4=отвечает на основной вопрос; 1-2=ответ неполный; 0=не отвечает на вопрос\n\nПРАВИЛА:\n- Пиши на простом разговорном русском, как будто объясняешь другу\n- Обращайся к студенту на «вы»\n- Будь конкретным и отмечай что получилось даже у слабых работ\n- Для каждого критерия: 1–2 коротких предложения\n- ctaMessage: дружеское приглашение на ZOOM-созвон, без давления, 1–2 предложения\n\nТЕКСТ СТУДЕНТА:\n{{1.writingAnswers.writing1}}\n\nВерни ТОЛЬКО валидный JSON без markdown:\n{\"grammar\":{\"score\":0,\"feedback\":\"текст\"},\"vocabulary\":{\"score\":0,\"feedback\":\"текст\"},\"coherence\":{\"score\":0,\"feedback\":\"текст\"},\"taskCompletion\":{\"score\":0,\"feedback\":\"текст\"},\"totalScore\":0,\"overallLevel\":\"A1\",\"overallFeedback\":\"текст\",\"strengths\":[\"текст\",\"текст\"],\"improvements\":[\"текст\",\"текст\"],\"ctaMessage\":\"текст\"}"
     }
   ]
 }
 ```
-
-> ⚠️ Replace `{{1.writingAnswers.writing1}}` with the actual mapped field from the webhook — click inside the content field and select it from the dropdown.
 
 3. **Parse response:** turn on **Parse response**
 
@@ -116,7 +114,7 @@ https://api.anthropic.com/v1/messages
 1. Click `+` → search **JSON** → **Parse JSON**
 2. **JSON string**: map to `data` → `content` → `[0]` → `text` from the HTTP module output
 
-This gives you access to `grammar.score`, `vocabulary.score`, `coherence.score`, `taskCompletion.score`, `totalScore`, `overallLevel`, `overallFeedback`, `strengths`, `improvements`.
+This gives you access to: `grammar.score`, `vocabulary.score`, `coherence.score`, `taskCompletion.score`, `totalScore`, `overallLevel`, `overallFeedback`, `strengths`, `improvements`, **`ctaMessage`**.
 
 ---
 
@@ -239,7 +237,7 @@ This gives you access to `grammar.score`, `vocabulary.score`, `coherence.score`,
 
   <div style="background: linear-gradient(135deg, #E8F5F4, #F0FFFE); padding: 25px; margin: 20px 0; border-radius: 8px; border: 3px solid #5DAEA8; text-align:center;">
     <h2>🗣️ Следующий шаг</h2>
-    <p>Запишитесь на ZOOM созвон для оценки разговорных навыков!</p>
+    <p style="font-size:16px; margin-bottom:20px;">{{4.ctaMessage}}</p>
     <a href="https://t.me/tyveric" style="display:inline-block; background:#5DAEA8; color:white; padding:15px 30px; text-decoration:none; border-radius:8px; font-weight:bold; font-size:18px; margin-top:10px;">
       🎥 Записаться на ZOOM созвон
     </a>
