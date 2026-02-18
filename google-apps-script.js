@@ -55,8 +55,7 @@ function doPost(e) {
     // 1. Grade writing with Claude API
     Logger.log('Calling Claude API for writing assessment...');
     const writingAssessment = gradeWritingWithClaude(
-      data.writingAnswers.writing1 || '',
-      data.writingAnswers.writing2 || ''
+      data.writingAnswers.writing1 || ''
     );
     Logger.log('Claude assessment complete. Score: ' + writingAssessment.totalScore);
 
@@ -100,48 +99,59 @@ function doPost(e) {
 }
 
 // ==================== CLAUDE API INTEGRATION ====================
-function gradeWritingWithClaude(task1, task2) {
-  // Validate inputs
-  if (!task1 || task1.trim().length < 20) {
-    task1 = '[Not completed]';
-  }
-  if (!task2 || task2.trim().length < 20) {
-    task2 = '[Not completed]';
+function gradeWritingWithClaude(writingText) {
+  // Validate input
+  if (!writingText || writingText.trim().length < 10) {
+    writingText = '[Not completed]';
   }
 
-  // Create prompt for Claude
-  const prompt = `You are an expert ESL teacher grading English placement test writing tasks. Grade these two writing samples and return your assessment.
+  // Create prompt for Claude — single short task, 4-criterion rubric
+  const prompt = `You are an expert ESL teacher grading a short English placement test writing sample.
 
-SCORING RUBRIC (Total: 28 points):
-- Task 1: 0-12 points (Daily Routine - A1-A2 level)
-  * Grammar accuracy (0-4)
-  * Vocabulary range (0-3)
-  * Task completion (0-3)
-  * Organization (0-2)
+The student was asked to write 3–5 sentences choosing one of these prompts:
+Option A: Tell us about yourself — where you're from, what you do, and why you're learning English.
+Option B: What is one thing you like (or dislike) about your city or country? Explain why.
 
-- Task 2: 0-16 points (Opinion Essay - B1-B2 level)
-  * Grammar accuracy (0-5)
-  * Vocabulary range (0-4)
-  * Task completion & argumentation (0-4)
-  * Organization & cohesion (0-3)
+SCORING RUBRIC (28 points total):
 
-TASK 1 - Daily Routine (Target: 80-120 words, A1-A2 level):
-${task1}
+1. GRAMMAR & ACCURACY (0-8 points):
+   7-8: Nearly error-free, uses varied structures correctly
+   5-6: Good control of basics, minor errors, meaning always clear
+   3-4: Noticeable errors but meaning is clear
+   1-2: Frequent errors that impede understanding
+   0: Cannot assess (too short or no text)
 
-TASK 2 - Opinion Essay about Social Media (Target: 120-180 words, B1-B2 level):
-${task2}
+2. VOCABULARY & RANGE (0-7 points):
+   6-7: Wide range, precise word choice, good collocations
+   4-5: Adequate range, some good choices, minor repetition
+   2-3: Limited, overuse of simple words
+   1: Only most basic words
+   0: Cannot assess
+
+3. COHERENCE & ORGANIZATION (0-7 points):
+   6-7: Clear flow, effective connectors, ideas progress logically
+   4-5: Generally well-organized, some linking words
+   2-3: Simple linking (and/but/so), some jumps
+   1: Poor organization, ideas disconnected
+   0: Cannot assess
+
+4. TASK COMPLETION (0-6 points):
+   5-6: Fully addresses the prompt, appropriate length, developed ideas
+   3-4: Addresses main point, reasonable length
+   1-2: Partially addresses prompt, too short, underdeveloped
+   0: Does not address prompt or too short to assess
+
+STUDENT'S WRITING:
+${writingText}
 
 Provide your grading in EXACTLY this JSON format (no markdown, no code blocks):
 {
-  "task1": {
-    "score": [number 0-12],
-    "feedback": "[2-3 sentences in Russian]"
-  },
-  "task2": {
-    "score": [number 0-16],
-    "feedback": "[2-3 sentences in Russian]"
-  },
-  "totalScore": [sum of both scores, 0-28],
+  "grammar": { "score": [0-8], "feedback": "[2-3 sentences in Russian]" },
+  "vocabulary": { "score": [0-7], "feedback": "[2-3 sentences in Russian]" },
+  "coherence": { "score": [0-7], "feedback": "[2-3 sentences in Russian]" },
+  "taskCompletion": { "score": [0-6], "feedback": "[2-3 sentences in Russian]" },
+  "totalScore": [sum of all 4, 0-28],
+  "overallLevel": "[A1/A2/B1/B2/C1 — based on writing quality]",
   "overallFeedback": "[3-4 sentences overall assessment in Russian]",
   "strengths": ["[strength 1 in Russian]", "[strength 2 in Russian]"],
   "improvements": ["[area 1 in Russian]", "[area 2 in Russian]"]
@@ -190,14 +200,16 @@ Provide your grading in EXACTLY this JSON format (no markdown, no code blocks):
     const assessment = JSON.parse(content);
 
     // Validate the response structure
-    if (!assessment.task1 || !assessment.task2 || typeof assessment.totalScore !== 'number') {
+    if (!assessment.grammar || !assessment.vocabulary || !assessment.coherence || !assessment.taskCompletion || typeof assessment.totalScore !== 'number') {
       throw new Error('Invalid response structure from Claude');
     }
 
     // Ensure scores are within valid ranges
-    assessment.task1.score = Math.max(0, Math.min(12, assessment.task1.score));
-    assessment.task2.score = Math.max(0, Math.min(16, assessment.task2.score));
-    assessment.totalScore = Math.max(0, Math.min(28, assessment.totalScore));
+    assessment.grammar.score = Math.max(0, Math.min(8, assessment.grammar.score));
+    assessment.vocabulary.score = Math.max(0, Math.min(7, assessment.vocabulary.score));
+    assessment.coherence.score = Math.max(0, Math.min(7, assessment.coherence.score));
+    assessment.taskCompletion.score = Math.max(0, Math.min(6, assessment.taskCompletion.score));
+    assessment.totalScore = assessment.grammar.score + assessment.vocabulary.score + assessment.coherence.score + assessment.taskCompletion.score;
 
     return assessment;
 
@@ -206,16 +218,13 @@ Provide your grading in EXACTLY this JSON format (no markdown, no code blocks):
 
     // Return fallback assessment if Claude fails
     return {
-      task1: {
-        score: 6,
-        feedback: "Автоматическая оценка недоступна. Преподаватель проверит вручную."
-      },
-      task2: {
-        score: 8,
-        feedback: "Автоматическая оценка недоступна. Преподаватель проверит вручную."
-      },
-      totalScore: 14,
-      overallFeedback: "Технический сбой при автоматической оценке. Преподаватель проверит ваши работы вручную и отправит обновленные результаты.",
+      grammar: { score: 3, feedback: "Автоматическая оценка недоступна. Преподаватель проверит вручную." },
+      vocabulary: { score: 3, feedback: "Автоматическая оценка недоступна." },
+      coherence: { score: 3, feedback: "Автоматическая оценка недоступна." },
+      taskCompletion: { score: 4, feedback: "Автоматическая оценка недоступна." },
+      totalScore: 13,
+      overallLevel: "—",
+      overallFeedback: "Технический сбой при автоматической оценке. Преподаватель проверит работу вручную и отправит обновленные результаты.",
       strengths: ["Тест успешно отправлен"],
       improvements: ["Ожидайте ручной проверки преподавателя"]
     };
@@ -274,19 +283,21 @@ function saveToSheet(data, results, writingAssessment) {
       'Аудирование',
       'Грамматика',
       'Чтение',
-      'Письмо',
+      'Письмо (итого)',
       'Итого',
       'Процент',
       'Уровень',
-      'Письмо 1 (баллы)',
-      'Письмо 2 (баллы)',
-      'Текст письма 1',
-      'Текст письма 2',
+      'Уровень письма (ИИ)',
+      'Письмо: Грамматика',
+      'Письмо: Словарный запас',
+      'Письмо: Связность',
+      'Письмо: Выполнение задания',
+      'Текст письма',
       'Обратная связь ИИ'
     ]);
 
     // Format header row
-    const headerRange = sheet.getRange(1, 1, 1, 17);
+    const headerRange = sheet.getRange(1, 1, 1, 19);
     headerRange.setFontWeight('bold');
     headerRange.setBackground('#4285F4');
     headerRange.setFontColor('#FFFFFF');
@@ -306,10 +317,12 @@ function saveToSheet(data, results, writingAssessment) {
     results.totalScore + '/100',
     results.percentage + '%',
     results.level,
-    writingAssessment.task1.score + '/12',
-    writingAssessment.task2.score + '/16',
+    writingAssessment.overallLevel || '—',
+    writingAssessment.grammar.score + '/8',
+    writingAssessment.vocabulary.score + '/7',
+    writingAssessment.coherence.score + '/7',
+    writingAssessment.taskCompletion.score + '/6',
     data.writingAnswers.writing1 || '[Не выполнено]',
-    data.writingAnswers.writing2 || '[Не выполнено]',
     writingAssessment.overallFeedback
   ]);
 
@@ -375,11 +388,38 @@ function sendStudentEmail(studentInfo, results, writingAssessment) {
     </div>
 
     <div class="section">
-      <h2>✍️ Оценка письменных работ (ИИ)</h2>
-      <p><strong>Задание 1:</strong> ${writingAssessment.task1.score}/12 баллов</p>
-      <p>${writingAssessment.task1.feedback}</p>
-      <p><strong>Задание 2:</strong> ${writingAssessment.task2.score}/16 баллов</p>
-      <p>${writingAssessment.task2.feedback}</p>
+      <h2>✍️ Оценка письменного задания (ИИ)</h2>
+      <p><strong>Итого: ${writingAssessment.totalScore}/28</strong> &nbsp;|&nbsp; Уровень письма: <strong>${writingAssessment.overallLevel || '—'}</strong></p>
+      <table style="width:100%; border-collapse: collapse; margin: 15px 0;">
+        <tr style="background:#f0f8f7;">
+          <td style="padding:8px; border:1px solid #ddd;"><strong>Грамматика и точность</strong></td>
+          <td style="padding:8px; border:1px solid #ddd; text-align:center;"><strong>${writingAssessment.grammar.score}/8</strong></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:6px 8px; border:1px solid #ddd; font-size:13px; color:#555;">${writingAssessment.grammar.feedback}</td>
+        </tr>
+        <tr style="background:#f0f8f7;">
+          <td style="padding:8px; border:1px solid #ddd;"><strong>Словарный запас</strong></td>
+          <td style="padding:8px; border:1px solid #ddd; text-align:center;"><strong>${writingAssessment.vocabulary.score}/7</strong></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:6px 8px; border:1px solid #ddd; font-size:13px; color:#555;">${writingAssessment.vocabulary.feedback}</td>
+        </tr>
+        <tr style="background:#f0f8f7;">
+          <td style="padding:8px; border:1px solid #ddd;"><strong>Связность и организация</strong></td>
+          <td style="padding:8px; border:1px solid #ddd; text-align:center;"><strong>${writingAssessment.coherence.score}/7</strong></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:6px 8px; border:1px solid #ddd; font-size:13px; color:#555;">${writingAssessment.coherence.feedback}</td>
+        </tr>
+        <tr style="background:#f0f8f7;">
+          <td style="padding:8px; border:1px solid #ddd;"><strong>Выполнение задания</strong></td>
+          <td style="padding:8px; border:1px solid #ddd; text-align:center;"><strong>${writingAssessment.taskCompletion.score}/6</strong></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:6px 8px; border:1px solid #ddd; font-size:13px; color:#555;">${writingAssessment.taskCompletion.feedback}</td>
+        </tr>
+      </table>
       <p><strong>Общая оценка:</strong></p>
       <p>${writingAssessment.overallFeedback}</p>
     </div>
@@ -470,11 +510,15 @@ function testSetup() {
   Logger.log('Testing Claude API...');
   try {
     const testAssessment = gradeWritingWithClaude(
-      'I wake up at 7 AM every day. Then I eat breakfast.',
-      'I think social media has both advantages and disadvantages.'
+      "I'm from Almaty. I work as a teacher and I love my job. I'm learning English because I want to travel and communicate with people from different countries."
     );
     Logger.log('✅ Claude API is working!');
     Logger.log('Test score: ' + testAssessment.totalScore + '/28');
+    Logger.log('Grammar: ' + testAssessment.grammar.score + '/8');
+    Logger.log('Vocabulary: ' + testAssessment.vocabulary.score + '/7');
+    Logger.log('Coherence: ' + testAssessment.coherence.score + '/7');
+    Logger.log('Task Completion: ' + testAssessment.taskCompletion.score + '/6');
+    Logger.log('Writing Level: ' + testAssessment.overallLevel);
   } catch (error) {
     Logger.log('❌ Claude API error: ' + error.toString());
     return;
