@@ -249,7 +249,6 @@ function saveToSheet(data, results, writingAssessment) {
     results.level,
     writingAssessment.overallLevel || 'N/A',
     data.writingAnswers.writing1 || '[Не выполнено]',
-    data.writingAnswers.writing2 || '[Не выполнено]',
     writingAssessment.overallFeedback
   ]);
 
@@ -389,12 +388,10 @@ function sendStudentEmail(studentInfo, results, writingAssessment) {
 function testWritingEvaluation() {
   Logger.log('Testing writing evaluation with new rubric...');
 
-  const testWriting1 = `I wake up at 7 AM every morning. First, I eat breakfast with my family. Then I go to work by bus. I work in an office from 9 to 5. After work, I go home and watch TV. I go to bed at 11 PM.`;
-
-  const testWriting2 = `In my opinion, social media has both advantages and disadvantages, but I think the advantages are more important. First, social media helps us stay connected with friends and family who live far away. For example, I use WhatsApp to talk to my sister in another country. Second, we can learn new things from social media. However, some people spend too much time on social media and this is not healthy. In conclusion, I believe social media is good if we use it carefully.`;
+  const testWriting = `I'm from Almaty, Kazakhstan. I work as a marketing manager and I really enjoy my job. I'm learning English because I want to communicate with clients from different countries and travel more confidently.`;
 
   try {
-    const result = gradeWritingWithClaude(testWriting1, testWriting2);
+    const result = gradeWritingWithClaude(testWriting);
 
     Logger.log('\n=== WRITING EVALUATION RESULTS ===');
     Logger.log('Grammar & Accuracy: ' + result.grammar.score + '/8');
