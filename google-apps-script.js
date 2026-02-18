@@ -48,9 +48,27 @@ function doPost(e) {
   }
 }
 
+// ==================== GET THE SPREADSHEET ====================
+// getActiveSpreadsheet() works when this script was created via
+// Extensions → Apps Script inside the Google Sheet (container-bound).
+// openById() is the fallback for standalone scripts.
+function getSpreadsheet() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (ss) {
+      Logger.log('Using active spreadsheet: ' + ss.getName());
+      return ss;
+    }
+  } catch (e) {
+    Logger.log('getActiveSpreadsheet failed, trying openById: ' + e.toString());
+  }
+  Logger.log('Using openById fallback');
+  return SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+}
+
 // ==================== GET THE RIGHT TAB ====================
 function getSheet() {
-  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const ss = getSpreadsheet();
 
   // Try to find the tab by GID first
   const byGid = ss.getSheets().find(s => s.getSheetId() === CONFIG.SHEET_GID);
@@ -68,8 +86,7 @@ function getSheet() {
 
   // Last resort: create the tab
   Logger.log('Tab not found — creating: ' + CONFIG.SHEET_NAME);
-  const newSheet = ss.insertSheet(CONFIG.SHEET_NAME);
-  return newSheet;
+  return ss.insertSheet(CONFIG.SHEET_NAME);
 }
 
 // ==================== SAVE ROW TO SHEET ====================
