@@ -737,7 +737,7 @@
                         <li><strong>Часть 1: Аудирование</strong> - 12 вопросов</li>
                         <li><strong>Часть 2: Грамматика</strong> - 18 вопросов</li>
                         <li><strong>Часть 3: Чтение</strong> - 12 вопросов</li>
-                        <li><strong>Часть 4: Письмо</strong> - 2 задания (80-150 слов каждое)</li>
+                        <li><strong>Часть 4: Письмо</strong> - 30–80 слов</li>
                     </ul>
                 </div>
 
@@ -1568,18 +1568,18 @@ const testData = {
     },
 
     writing: {
-        title: "Part 4: Writing",
-        subtitle: "Choose ONE option and write a short response. No right or wrong answer — just write naturally!",
+        title: "Часть 4: Письмо",
+        subtitle: "Напишите 3–5 предложений на английском языке. Правильных и неправильных ответов нет — пишите как можете.",
         icon: "✍️",
         tasks: [
             {
                 id: "writing1",
                 level: "all",
-                title: "Short Writing Task",
-                prompt: "Choose ONE option and write 3–5 sentences:\n\n📌 Option A: Tell us a little about yourself — where you're from, what you do, and why you're learning English.\n\n📌 Option B: What is one thing you like (or dislike) about your city or country? Explain why.",
+                title: "",
+                prompt: "Выберите ОДИН вариант и напишите 3–5 предложений на английском:\n\n📌 Вариант A: Tell us a little about yourself — where you're from, what you do, and why you're learning English.\n\n📌 Вариант B: What is one thing you like (or dislike) about your city or country? Explain why.",
                 wordCountMin: 30,
                 wordCountMax: 80,
-                placeholder: "Start writing here... (e.g. \"I'm from Almaty. I work as a designer...\" or \"I live in Moscow. One thing I really like about it is...\")",
+                placeholder: "Начните писать здесь... (например: \"I'm from Almaty. I work as a designer...\")",
                 rubric: [
                     "Grammar accuracy",
                     "Vocabulary range",
@@ -1817,7 +1817,7 @@ function generateWritingTasks(data) {
                     ${promptHtml}
                 </div>
                 <p style="color: var(--text-light); margin: 12px 0; font-size: 14px;">
-                    ✍️ <strong>${task.wordCountMin}–${task.wordCountMax} words</strong> — write naturally, there are no wrong answers
+                    ✍️ <strong>${task.wordCountMin}–${task.wordCountMax} слов</strong>
                 </p>
                 <textarea
                     class="writing-textarea"
@@ -1826,7 +1826,7 @@ function generateWritingTasks(data) {
                     oninput="updateWordCount('${task.id}', ${task.wordCountMin}, ${task.wordCountMax})"
                     style="min-height: 140px;"
                 ></textarea>
-                <div class="word-count" id="${task.id}-count">0 words</div>
+                <div class="word-count" id="${task.id}-count">0 слов</div>
             </div>
         `;
     });
@@ -1841,10 +1841,10 @@ function generateNavigationButtons() {
     
     return `
         <div class="button-group">
-            ${!isFirstSection ? '<button class="btn btn-secondary" onclick="previousSection()">← Previous Section</button>' : ''}
-            ${!isLastSection ? 
-                '<button class="btn btn-primary" onclick="nextSection()">Next Section →</button>' :
-                '<button class="btn btn-primary" onclick="finishTest()">Submit Test 🎯</button>'
+            ${!isFirstSection ? '<button class="btn btn-secondary" onclick="previousSection()">← Назад</button>' : ''}
+            ${!isLastSection ?
+                '<button class="btn btn-primary" onclick="nextSection()">Далее →</button>' :
+                '<button class="btn btn-primary" onclick="finishTest()">Отправить тест 🎯</button>'
             }
         </div>
     `;
@@ -1896,7 +1896,7 @@ function updateWordCount(taskId, min, max) {
     currentState.writingAnswers[taskId] = textarea.value;
     saveState();
     
-    countEl.textContent = `${wordCount} words`;
+    countEl.textContent = `${wordCount} слов`;
     
     if (wordCount < min) {
         countEl.className = 'word-count warning';
@@ -2053,6 +2053,11 @@ function finishTest() {
         writingAnswers: currentState.writingAnswers
     };
 
+    // Guard: warn if URL is still placeholder
+    if (!CONFIG.MAKE_WEBHOOK_URL || CONFIG.MAKE_WEBHOOK_URL.includes('YOUR_WEBHOOK_ID_HERE')) {
+        console.error('⚠️ MAKE_WEBHOOK_URL is not set in CONFIG. Open index.html and replace YOUR_WEBHOOK_ID_HERE with your actual Make.com webhook URL.');
+    }
+
     // Send to Make.com webhook (supports CORS — no workaround needed)
     fetch(CONFIG.MAKE_WEBHOOK_URL, {
         method: 'POST',
@@ -2061,11 +2066,15 @@ function finishTest() {
     })
     .then(response => {
         console.log('Make.com webhook response:', response.status);
+        if (!response.ok) {
+            console.warn('Webhook returned non-OK status:', response.status, '— check Make.com scenario is ON and URL is correct');
+        }
         showConfirmationScreen();
     })
     .catch(error => {
-        console.error('Webhook error:', error);
-        // Show confirmation anyway — data likely sent even if response fails
+        console.error('Webhook fetch error:', error);
+        console.error('Check: 1) MAKE_WEBHOOK_URL is correct  2) Make.com scenario is turned ON  3) No browser extensions blocking requests');
+        // Still show confirmation — student experience should not be affected
         showConfirmationScreen();
     });
 
