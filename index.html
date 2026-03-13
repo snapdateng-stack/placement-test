@@ -709,7 +709,7 @@
     <!-- Header -->
     <div class="header">
         <h1>📚 English Placement Test</h1>
-        <p>Comprehensive Level Assessment • 44 Questions • ~45 minutes</p>
+        <p>Comprehensive Level Assessment • 32 Questions • ~50 minutes</p>
     </div>
     
     <!-- Progress Bar -->
@@ -734,9 +734,9 @@
                 <div class="info-card">
                     <h3>📋 Структура теста</h3>
                     <ul>
-                        <li><strong>Часть 1: Аудирование</strong> - 12 вопросов</li>
-                        <li><strong>Часть 2: Грамматика</strong> - 18 вопросов</li>
-                        <li><strong>Часть 3: Чтение</strong> - 12 вопросов</li>
+                        <li><strong>Часть 1: Аудирование</strong> - 10 вопросов</li>
+                        <li><strong>Часть 2: Грамматика</strong> - 12 вопросов</li>
+                        <li><strong>Часть 3: Чтение</strong> - 10 вопросов</li>
                         <li><strong>Часть 4: Письмо</strong> - 3–5 предложений</li>
                     </ul>
                 </div>
@@ -798,18 +798,18 @@
                 <div class="breakdown-card">
                     <h3>🎧 Аудирование</h3>
                     <div class="breakdown-score" id="listeningScore">0</div>
-                    <div class="breakdown-total">из 18 баллов</div>
+                    <div class="breakdown-total">из 25 баллов</div>
                     <div class="strength-bar-container">
                         <div class="strength-bar-fill" id="listeningBar" style="width: 0%"></div>
                     </div>
                     <div class="level-breakdown">
                         <div class="level-breakdown-item">
                             <span class="label">Базовый уровень:</span>
-                            <span class="value" id="listening-beginner">0/4</span>
+                            <span class="value" id="listening-beginner">0/3</span>
                         </div>
                         <div class="level-breakdown-item">
                             <span class="label">Средний уровень:</span>
-                            <span class="value" id="listening-intermediate">0/4</span>
+                            <span class="value" id="listening-intermediate">0/3</span>
                         </div>
                         <div class="level-breakdown-item">
                             <span class="label">Продвинутый уровень:</span>
@@ -822,22 +822,22 @@
                 <div class="breakdown-card">
                     <h3>✏️ Грамматика</h3>
                     <div class="breakdown-score" id="grammarScore">0</div>
-                    <div class="breakdown-total">из 36 баллов</div>
+                    <div class="breakdown-total">из 24 баллов</div>
                     <div class="strength-bar-container">
                         <div class="strength-bar-fill" id="grammarBar" style="width: 0%"></div>
                     </div>
                     <div class="level-breakdown">
                         <div class="level-breakdown-item">
                             <span class="label">Базовый уровень:</span>
-                            <span class="value" id="grammar-beginner">0/6</span>
+                            <span class="value" id="grammar-beginner">0/4</span>
                         </div>
                         <div class="level-breakdown-item">
                             <span class="label">Средний уровень:</span>
-                            <span class="value" id="grammar-intermediate">0/6</span>
+                            <span class="value" id="grammar-intermediate">0/4</span>
                         </div>
                         <div class="level-breakdown-item">
                             <span class="label">Продвинутый уровень:</span>
-                            <span class="value" id="grammar-advanced">0/6</span>
+                            <span class="value" id="grammar-advanced">0/4</span>
                         </div>
                     </div>
                 </div>
@@ -846,18 +846,18 @@
                 <div class="breakdown-card">
                     <h3>📖 Чтение</h3>
                     <div class="breakdown-score" id="readingScore">0</div>
-                    <div class="breakdown-total">из 18 баллов</div>
+                    <div class="breakdown-total">из 25 баллов</div>
                     <div class="strength-bar-container">
                         <div class="strength-bar-fill" id="readingBar" style="width: 0%"></div>
                     </div>
                     <div class="level-breakdown">
                         <div class="level-breakdown-item">
                             <span class="label">Базовый уровень:</span>
-                            <span class="value" id="reading-beginner">0/4</span>
+                            <span class="value" id="reading-beginner">0/3</span>
                         </div>
                         <div class="level-breakdown-item">
                             <span class="label">Средний уровень:</span>
-                            <span class="value" id="reading-intermediate">0/4</span>
+                            <span class="value" id="reading-intermediate">0/3</span>
                         </div>
                         <div class="level-breakdown-item">
                             <span class="label">Продвинутый уровень:</span>
@@ -946,21 +946,6 @@ const testData = {
                 correct: "a"
             },
             {
-                id: 3,
-                level: "beginner",
-                points: 1,
-                audio: "EPT-Listening-A.mp3",
-                audioTitle: "🛒 Listening A: Grocery Store Conversation",
-                text: "What does the woman NOT need?",
-                options: [
-                    { value: "a", text: "butter" },
-                    { value: "b", text: "shampoo" },
-                    { value: "c", text: "fruit and vegetables" },
-                    { value: "d", text: "help finding things" }
-                ],
-                correct: "c"
-            },
-            {
                 id: 4,
                 level: "beginner",
                 points: 1,
@@ -1003,21 +988,6 @@ const testData = {
                     { value: "b", text: "They posted about it on social media" },
                     { value: "c", text: "They called first responders" },
                     { value: "d", text: "They turned on the TV" }
-                ],
-                correct: "b"
-            },
-            {
-                id: 7,
-                level: "intermediate",
-                points: 2,
-                audio: "EPT-Listening-B-AP.mp3",
-                audioTitle: "📰 Listening B: News Report",
-                text: "What did geophysicists say to people in South Carolina?",
-                options: [
-                    { value: "a", text: "They likely won't experience another earthquake for a few years" },
-                    { value: "b", text: "They should expect smaller aftershocks in the next few weeks" },
-                    { value: "c", text: "They should prepare for a bigger earthquake in the next month" },
-                    { value: "d", text: "Their homes will likely shake for many months to come" }
                 ],
                 correct: "b"
             },
@@ -1120,19 +1090,6 @@ const testData = {
                 correct: "d"
             },
             {
-                id: 14,
-                level: "beginner",
-                points: 1,
-                text: "She _____ breakfast right now.",
-                options: [
-                    { value: "a", text: "eat" },
-                    { value: "b", text: "eats" },
-                    { value: "c", text: "ate" },
-                    { value: "d", text: "is eating" }
-                ],
-                correct: "d"
-            },
-            {
                 id: 15,
                 level: "beginner",
                 points: 1,
@@ -1144,19 +1101,6 @@ const testData = {
                     { value: "d", text: "to" }
                 ],
                 correct: "b"
-            },
-            {
-                id: 16,
-                level: "beginner",
-                points: 1,
-                text: "The baker _____ 50 loaves of bread yesterday.",
-                options: [
-                    { value: "a", text: "made" },
-                    { value: "b", text: "makes" },
-                    { value: "c", text: "is making" },
-                    { value: "d", text: "make" }
-                ],
-                correct: "a"
             },
             {
                 id: 17,
@@ -1199,19 +1143,6 @@ const testData = {
                 correct: "c"
             },
             {
-                id: 20,
-                level: "intermediate",
-                points: 2,
-                text: "You _____ wear a seatbelt while driving. It's the law.",
-                options: [
-                    { value: "a", text: "can" },
-                    { value: "b", text: "should" },
-                    { value: "c", text: "must" },
-                    { value: "d", text: "might" }
-                ],
-                correct: "c"
-            },
-            {
                 id: 21,
                 level: "intermediate",
                 points: 2,
@@ -1223,19 +1154,6 @@ const testData = {
                     { value: "d", text: "has read" }
                 ],
                 correct: "c"
-            },
-            {
-                id: 22,
-                level: "intermediate",
-                points: 2,
-                text: "If it _____ tomorrow, we'll stay home and watch movies.",
-                options: [
-                    { value: "a", text: "will rain" },
-                    { value: "b", text: "rains" },
-                    { value: "c", text: "rained" },
-                    { value: "d", text: "would rain" }
-                ],
-                correct: "b"
             },
             {
                 id: 23,
@@ -1304,19 +1222,6 @@ const testData = {
                 correct: "c"
             },
             {
-                id: 28,
-                level: "advanced",
-                points: 3,
-                text: "_____ had I arrived at the party than it started raining heavily.",
-                options: [
-                    { value: "a", text: "As soon as" },
-                    { value: "b", text: "No sooner" },
-                    { value: "c", text: "Hardly" },
-                    { value: "d", text: "After" }
-                ],
-                correct: "b"
-            },
-            {
                 id: 29,
                 level: "advanced",
                 points: 3,
@@ -1329,19 +1234,6 @@ const testData = {
                 ],
                 correct: "a"
             },
-            {
-                id: 30,
-                level: "advanced",
-                points: 3,
-                text: "_____ surprised me was his complete lack of interest in the proposal.",
-                options: [
-                    { value: "a", text: "That" },
-                    { value: "b", text: "What" },
-                    { value: "c", text: "Which" },
-                    { value: "d", text: "It" }
-                ],
-                correct: "b"
-            }
         ]
     },
 
@@ -1353,10 +1245,10 @@ const testData = {
             // BEGINNER (A1-A2) - Menu reading
             {
                 level: "beginner",
-                title: "Sandy's Breakfast Menu",
+                title: "Tika's Breakfast Menu",
                 content: `
                     <div class="menu-box">
-                        <h3 style="text-align: center; color: var(--primary-orange);">🍽️ Sandy's Breakfast Menu</h3>
+                        <h3 style="text-align: center; color: var(--primary-orange);">🍽️ Tika's Breakfast Menu</h3>
                         <p style="text-align: center; font-style: italic; margin-bottom: 20px;">(Available Mon–Fri, 7–11:30 am)</p>
                         
                         <h4>Sides</h4>
@@ -1390,19 +1282,6 @@ const testData = {
                             { value: "d", text: "a receipt" }
                         ],
                         correct: "b"
-                    },
-                    {
-                        id: 32,
-                        level: "beginner",
-                        points: 1,
-                        text: "What is the name of the restaurant?",
-                        options: [
-                            { value: "a", text: "The information is not available" },
-                            { value: "b", text: "Breakfast Menu" },
-                            { value: "c", text: "Sides" },
-                            { value: "d", text: "Sandy's" }
-                        ],
-                        correct: "d"
                     },
                     {
                         id: 33,
@@ -1455,19 +1334,6 @@ const testData = {
                             { value: "d", text: "comfortable" }
                         ],
                         correct: "b"
-                    },
-                    {
-                        id: 36,
-                        level: "intermediate",
-                        points: 2,
-                        text: "What does Yuko do for a living?",
-                        options: [
-                            { value: "a", text: "She rides the Metro" },
-                            { value: "b", text: "She takes photographs" },
-                            { value: "c", text: "She teaches Japanese" },
-                            { value: "d", text: "She visits museums" }
-                        ],
-                        correct: "c"
                     },
                     {
                         id: 37,
@@ -1956,11 +1822,38 @@ function updateProgress() {
 // ==================== RESULTS CALCULATION ====================
 function calculateResults() {
     const results = {
-        listening: { score: 0, max: 18, byLevel: { beginner: { score: 0, total: 4 }, intermediate: { score: 0, total: 4 }, advanced: { score: 0, total: 4 } } },
-        grammar: { score: 0, max: 36, byLevel: { beginner: { score: 0, total: 6 }, intermediate: { score: 0, total: 6 }, advanced: { score: 0, total: 6 } } },
-        reading: { score: 0, max: 18, byLevel: { beginner: { score: 0, total: 4 }, intermediate: { score: 0, total: 4 }, advanced: { score: 0, total: 4 } } },
+        listening: {
+            score: 0,
+            rawMax: 21,        // 3×1 + 3×2 + 4×3 = 21 raw points
+            displayMax: 25,
+            byLevel: {
+                beginner: { score: 0, total: 3 },
+                intermediate: { score: 0, total: 3 },
+                advanced: { score: 0, total: 4 }
+            }
+        },
+        grammar: {
+            score: 0,
+            rawMax: 24,        // 4×1 + 4×2 + 4×3 = 24 raw points
+            displayMax: 24,
+            byLevel: {
+                beginner: { score: 0, total: 4 },
+                intermediate: { score: 0, total: 4 },
+                advanced: { score: 0, total: 4 }
+            }
+        },
+        reading: {
+            score: 0,
+            rawMax: 21,        // 3×1 + 3×2 + 4×3 = 21 raw points
+            displayMax: 25,
+            byLevel: {
+                beginner: { score: 0, total: 3 },
+                intermediate: { score: 0, total: 3 },
+                advanced: { score: 0, total: 4 }
+            }
+        },
         totalScore: 0,
-        maxScore: 72,
+        rawMaxScore: 66,       // 21 + 24 + 21 = 66
         percentage: 0
     };
     
@@ -1991,8 +1884,13 @@ function calculateResults() {
     });
     
     results.totalScore = results.listening.score + results.grammar.score + results.reading.score;
-    results.percentage = Math.round((results.totalScore / results.maxScore) * 100);
-    
+    results.percentage = Math.round((results.totalScore / results.rawMaxScore) * 100);
+
+    // Calculate display scores (scaled for user presentation)
+    results.listening.displayScore = Math.round((results.listening.score / results.listening.rawMax) * results.listening.displayMax);
+    results.grammar.displayScore = Math.round((results.grammar.score / results.grammar.rawMax) * results.grammar.displayMax);
+    results.reading.displayScore = Math.round((results.reading.score / results.reading.rawMax) * results.reading.displayMax);
+
     return results;
 }
 
@@ -2011,9 +1909,9 @@ function getRecommendations(results, placement) {
     
     recommendations.push(`<strong>Уровень CEFR:</strong> ${placement.level}`);
     
-    const listeningPercent = (results.listening.score / results.listening.max) * 100;
-    const grammarPercent = (results.grammar.score / results.grammar.max) * 100;
-    const readingPercent = (results.reading.score / results.reading.max) * 100;
+    const listeningPercent = (results.listening.score / results.listening.rawMax) * 100;
+    const grammarPercent = (results.grammar.score / results.grammar.rawMax) * 100;
+    const readingPercent = (results.reading.score / results.reading.rawMax) * 100;
     
     if (listeningPercent < 50) {
         recommendations.push("Сосредоточьтесь на упражнениях на аудирование и подкастах");
@@ -2182,10 +2080,11 @@ function retakeTest() {
 }
 
 function updateSectionScore(section, data) {
-    document.getElementById(`${section}Score`).textContent = data.score;
-    const percent = (data.score / data.max) * 100;
+    // Use displayScore for visual presentation
+    document.getElementById(`${section}Score`).textContent = data.displayScore;
+    const percent = (data.displayScore / data.displayMax) * 100;
     document.getElementById(`${section}Bar`).style.width = `${percent}%`;
-    
+
     Object.keys(data.byLevel).forEach(level => {
         const elem = document.getElementById(`${section}-${level}`);
         if (elem) {
