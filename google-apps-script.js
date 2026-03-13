@@ -21,7 +21,7 @@ const CONFIG = {
 
   // The tab GID (from the URL after gid=)
   // This targets the exact tab — change if you want a different tab
-  SHEET_GID: 1121176103,
+  SHEET_GID: 1447809396,
 
   // Fallback: if GID not found, use this tab name instead
   SHEET_NAME: 'Submissions'
