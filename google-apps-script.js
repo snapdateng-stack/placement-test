@@ -27,14 +27,39 @@ const CONFIG = {
   SHEET_NAME: 'Submissions'
 };
 
+// ==================== GET HANDLER (for testing) ====================
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      status: 'OK',
+      message: 'Apps Script is deployed correctly. Use POST to submit data.',
+      spreadsheetId: CONFIG.SPREADSHEET_ID,
+      sheetGid: CONFIG.SHEET_GID
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 // ==================== MAIN HANDLER ====================
 function doPost(e) {
   try {
+    // Safety check: ensure e exists
+    if (!e) {
+      throw new Error('Event object is undefined. Make sure this is deployed as a Web App.');
+    }
+
     // FormData submissions arrive in e.parameter.data
     // Raw JSON submissions arrive in e.postData.contents
-    const raw = (e.parameter && e.parameter.data)
-                  ? e.parameter.data
-                  : e.postData.contents;
+    let raw;
+    if (e.parameter && e.parameter.data) {
+      raw = e.parameter.data;
+      Logger.log('Received FormData submission');
+    } else if (e.postData && e.postData.contents) {
+      raw = e.postData.contents;
+      Logger.log('Received raw JSON submission');
+    } else {
+      throw new Error('No data found in e.parameter.data or e.postData.contents');
+    }
+
     const data = JSON.parse(raw);
     Logger.log('Received submission from: ' + (data.studentInfo && data.studentInfo.name));
 
@@ -46,6 +71,7 @@ function doPost(e) {
 
   } catch (error) {
     Logger.log('ERROR: ' + error.toString());
+    Logger.log('Event object: ' + JSON.stringify(e));
     return ContentService
       .createTextOutput(JSON.stringify({ success: false, error: error.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
